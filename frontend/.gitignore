@@ -6,6 +6,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+_tmp_*
+.tmp*
 
 node_modules
 dist-ssr

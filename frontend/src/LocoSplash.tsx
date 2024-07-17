@@ -57,7 +57,7 @@ export const LocoSplash = () => {
         </div>
       </header>
       <div className="logo">
-        <h1>Loco: SaaS application</h1>
+        <h1>The Inkwell Collective!</h1>
         <img
           src="https://loco.rs/images/logo.png"
           className="logo"
