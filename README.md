@@ -1,53 +1,12 @@
-# Welcome to Loco :train:
+# Bookclub Management Made Easy
 
-Loco is a web and API framework running on Rust.
+## Development
 
-This is the **SaaS starter** which includes a `User` model and authentication based on JWT.
+This repo uses [`devenv`](https://devenv.sh/) for local development.
+To get started, install `devenv`, then run `devenv up` in the root of this repo.
+Once running, the server will reload when any relevant file changes.
+This repo uses [`watchexec`](https://github.com/watchexec/watchexec) to rebuild the server.
 
+To access a shell with all proper binaries installed, run `devenv shell`.
 
-## Quick Start
-
-You need:
-
-* A local postgres instance
-* A local Redis instance
-
-Check out your development [configuration](config/development.yaml).
-
-> To configure a database , please run a local postgres database with <code>loco:loco</code> and a db named <code>[app name]_development.</code>: 
-<code>docker run -d -p 5432:5432 -e POSTGRES_USER=loco -e POSTGRES_DB=[app name]_development -e POSTGRES_PASSWORD="loco" postgres:15.3-alpine</code>
-
-Now start your app:
-
-```
-$ cargo loco start
-Finished dev [unoptimized + debuginfo] target(s) in 21.63s
-    Running `target/debug/myapp start`
-
-    :
-    :
-    :
-
-controller/app_routes.rs:203: [Middleware] Adding log trace id
-
-                      ▄     ▀
-                                 ▀  ▄
-                  ▄       ▀     ▄  ▄ ▄▀
-                                    ▄ ▀▄▄
-                        ▄     ▀    ▀  ▀▄▀█▄
-                                          ▀█▄
-▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▀▀█
- ██████  █████   ███ █████   ███ █████   ███ ▀█
- ██████  █████   ███ █████   ▀▀▀ █████   ███ ▄█▄
- ██████  █████   ███ █████       █████   ███ ████▄
- ██████  █████   ███ █████   ▄▄▄ █████   ███ █████
- ██████  █████   ███  ████   ███ █████   ███ ████▀
-   ▀▀▀██▄ ▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀ ██▀
-       ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-
-started on port 5150
-```
-
-## Getting help
-
-Check out [a quick tour](https://loco.rs/docs/getting-started/tour/) or [the complete guide](https://loco.rs/docs/getting-started/guide/).
+## 
