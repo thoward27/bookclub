@@ -38,7 +38,7 @@ in
     '';
     frontend.exec = "cd frontend && pnpm run dev";
 
-    build.exec = "cd frontend && pnpm run build && cd - && cargo build --release";
+    build.exec = "cd frontend && pnpm install && pnpm run build && cd - && cargo build --release";
   };
 
   services = {
@@ -73,8 +73,8 @@ in
 
   containers.prod = {
     copyToRoot = [
-      ./frontend/dist
-      ./config/production.yaml
+      ./frontend
+      ./config
     ];
     startupCommand = "./bookclub";
   };
