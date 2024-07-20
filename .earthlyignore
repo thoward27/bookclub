@@ -1,0 +1,9 @@
+.devcontainer
+.devenv*
+.github
+examples
+target
+
+frontend/node_modules
+frontend/dist
+
