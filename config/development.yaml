@@ -1,4 +1,6 @@
 # Loco configuration file documentation
+settings:
+  title: Inkwell Collective
 
 # Application logging configuration
 logger:
