@@ -12,7 +12,8 @@ use crate::views::picks::PicksTemplate;
 #[debug_handler]
 async fn get_picks(State(ctx): State<AppContext>) -> Result<impl IntoResponse> {
     let settings =
-        common::settings::Settings::from_json(&ctx.config.settings.unwrap_or(json!["{}"])).unwrap_or_default();
+        common::settings::Settings::from_json(&ctx.config.settings.unwrap_or(json!["{}"]))
+            .unwrap_or_default();
     let picks = picks::Entity::find().all(&ctx.db).await.unwrap();
     Ok(PicksTemplate {
         title: settings.title,

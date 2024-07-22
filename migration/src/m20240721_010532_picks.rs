@@ -30,7 +30,4 @@ enum Picks {
     Id,
     Title,
     Author,
-    
 }
-
-
