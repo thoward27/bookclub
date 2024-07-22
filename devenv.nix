@@ -13,7 +13,10 @@ in
   ++ lib.optionals (!config.containers.prod.isBuilding) [ pkgs.git pkgs.watchexec pkgs.earthly ];
 
   enterTest = ''
+    cargo fmt --check
+    cargo clippy
     cargo test
+    cargo loco task seed_data
   '';
 
   scripts = {
@@ -25,6 +28,7 @@ in
         --restart \
         'cd frontend && pnpm run build && cd - && cargo loco start --binding 127.0.0.1' 
     '';
+    # Install is broken out because when it is run in the backend-watch it doom-cycles.
     pnpm-install-watch.exec = ''
     watchexec \
       --watch frontend/package.json \
@@ -41,10 +45,7 @@ in
   };
 
   processes = {
-    # Watch the package.json file, if that changes, restart everything from installation.
-    # Watch the source tree, if that changes, rebuild everything.
     backend.exec = "htmx-watch";
-    build.exec = "cargo build --release";
   };
 
   services = {
@@ -75,6 +76,8 @@ in
   pre-commit.hooks = {
     clippy.enable = true;
     clippy.settings.allFeatures = true;
+    cargo-check.enable = true;
+    rustfmt.enable = true;
   };
 
   containers.prod = {

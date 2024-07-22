@@ -1,7 +1,7 @@
+use bookclub::app::App;
 use eyre::Context;
 #[allow(unused_imports)]
 use loco_rs::{cli::playground, prelude::*};
-use bookclub::app::App;
 
 #[tokio::main]
 async fn main() -> eyre::Result<()> {
