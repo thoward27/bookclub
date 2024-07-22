@@ -75,8 +75,8 @@ server:
 
     # client side app static config
     static:
-      enable: true
-      must_exist: true
+      enable: false
+      must_exist: false
       precompressed: false
       folder:
         uri: "/"
