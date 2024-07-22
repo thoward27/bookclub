@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h2>Picks</h2>
+<ul>
+    {% for pick in picks %}
+    <li>{{ pick }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
