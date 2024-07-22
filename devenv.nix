@@ -76,6 +76,7 @@ in
   pre-commit.hooks = {
     clippy.enable = true;
     clippy.settings.allFeatures = true;
+    clippy.settings.denyWarnings = true;
     cargo-check.enable = true;
     rustfmt.enable = true;
   };
