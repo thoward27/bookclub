@@ -4,3 +4,5 @@ mod prepare_data;
 mod user;
 
 pub mod picks;
+
+pub mod home;
