@@ -3,3 +3,5 @@ pub mod notes;
 pub mod user;
 
 pub mod picks;
+
+pub mod home;
