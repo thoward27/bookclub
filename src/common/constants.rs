@@ -17,5 +17,7 @@ impl<T: std::fmt::Display> Display for Constant<T> {
 }
 
 pub static TITLE: Constant<String> = Constant {
-    value: LazyLock::new(|| env::var("TITLE").unwrap_or_else(|_| DEFAULT_TITLE.to_string())),
+    value: LazyLock::new(|| {
+        env::var("BOOKCLUB_TITLE").unwrap_or_else(|_| DEFAULT_TITLE.to_string())
+    }),
 };
