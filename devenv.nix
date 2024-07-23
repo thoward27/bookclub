@@ -10,7 +10,7 @@ in
     pkgs.libiconv
   ]
   ++ lib.optionals (pkgs.stdenv.isDarwin) [ pkgs.darwin.apple_sdk.frameworks.Foundation ]
-  ++ lib.optionals (!config.containers.prod.isBuilding) [ pkgs.git pkgs.watchexec pkgs.earthly ];
+  ++ lib.optionals (!config.containers.prod.isBuilding) [ pkgs.git pkgs.watchexec pkgs.earthly pkgs.helix ];
 
   enterTest = ''
     cargo fmt --check
@@ -68,7 +68,7 @@ in
   languages = {
     nix.enable = true;
     rust.enable = true;
-    rust.channel = "stable";
+    rust.channel = "nightly";
     javascript.enable = true;
     javascript.pnpm.enable = true;
   };
