@@ -1,0 +1,181 @@
+---
+- id: 1
+  title: The Immortality Key
+  author: Brian C. Muraresku
+  circuit: 1 # Nonfiction
+  user: 1 # Tom
+  calibre_link: "https://calibre.inkwellcollective.com/books/the-immortality-key"
+  isbn_10: "1250207142"
+  isbn_13: "978-1250207142"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 2
+  title: The Children of Ash and Elm
+  author: Neil Price
+  circuit: 1 # Nonfiction
+  user: 2 # Tomas
+  calibre_link: "https://calibre.inkwellcollective.com/books/the-children-of-ash-and-elm"
+  isbn_10: "0465096988"
+  isbn_13: "978-0465096985"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 3
+  title: Rules for Radicals
+  author: Saul Alinsky
+  circuit: 1 # Nonfiction
+  user: 3 # Najib
+  calibre_link: "https://calibre.inkwellcollective.com/books/rules-for-radicals"
+  isbn_10: "0679721134"
+  isbn_13: "978-0679721130"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 4
+  title: The Name of the Wind
+  author: Patrick Rothfuss
+  circuit: 2 # Fiction
+  user: 4 # Bryce
+  calibre_link: "https://calibre.inkwellcollective.com/books/the-name-of-the-wind"
+  isbn_10: "0756404746"
+  isbn_13: "978-0756404741"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 5
+  title: The Devil in White City
+  author: Erik Larson
+  circuit: 1 # Nonfiction
+  user: 4 # Bryce
+  calibre_link: "https://calibre.inkwellcollective.com/books/the-devil-in-white-city"
+  isbn_10: "0375725601"
+  isbn_13: "978-0375725609"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 6
+  title: The Wise Man's Fear
+  author: Patrick Rothfuss
+  circuit: 2 # Fiction
+  user: 2 # Tomas
+  calibre_link: "https://calibre.inkwellcollective.com/books/the-wise-mans-fear"
+  isbn_10: "0756407915"
+  isbn_13: "978-0756407919"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 7
+  title: Magician's of the Gods
+  author: Graham Hancock
+  circuit: 1 # Nonfiction
+  user: 1 # Tom
+  calibre_link: "https://calibre.inkwellcollective.com/books/magicians-of-the-gods"
+  isbn_10: "1250118409"
+  isbn_13: "978-1250118400"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 8
+  title: Columbus Day
+  author: Craig Alanson
+  circuit: 2 # Fiction
+  user: 1 # Tom
+  calibre_link: "https://calibre.inkwellcollective.com/books/columbus-day"
+  isbn_10: "1542046903"
+  isbn_13: "978-1542046907"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 9
+  title: Food of the Gods
+  author: Terence McKenna
+  circuit: 1 # Nonfiction
+  user: 2 # Tomas
+  calibre_link: "https://calibre.inkwellcollective.com/books/food-of-the-gods"
+  isbn_10: "0553371304"
+  isbn_13: "978-0553371307"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 10
+  title: The Anarchist's Handbook
+  author: Michael Malice
+  circuit: 1 # Nonfiction
+  user: 3 # Najib
+  calibre_link: "https://calibre.inkwellcollective.com/books/the-anarchists-handbook"
+  isbn_10: "1569800863"
+  isbn_13: "978-1569800864"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 11
+  title: The Way of Kings
+  author: Brandon Sanderson
+  circuit: 2 # Fiction
+  user: 3 # Najib
+  calibre_link: "https://calibre.inkwellcollective.com/books/the-way-of-kings"
+  isbn_10: "0765326353"
+  isbn_13: "978-0765326355"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 12
+  title: "Conspiracy: Peter Thiel, Hulk Hogan, Gawker, and the Anatomy of Intrigue"
+  author: Ryan Holiday
+  circuit: 1 # Nonfiction
+  user: 4 # Bryce
+  calibre_link: "https://calibre.inkwellcollective.com/books/conspiracy"
+  isbn_10: "0062457713"
+  isbn_13: "978-0062457718"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 13
+  title: The Final Empire
+  author: Brandon Sanderson
+  circuit: 2 # Fiction
+  user: 1 # Tom
+  calibre_link: "https://calibre.inkwellcollective.com/books/the-final-empire"
+  isbn_10: "0765311780"
+  isbn_13: "978-0765311788"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 14
+  title: In Cold Blood
+  author: Truman Capote
+  circuit: 1 # Nonfiction
+  user: 6 # Jason
+  calibre_link: "https://calibre.inkwellcollective.com/books/in-cold-blood"
+  isbn_10: "0679745580"
+  isbn_13: "978-0679745587"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 15
+  title: The Eye of the World
+  author: Robert Jordan
+  circuit: 2 # Fiction
+  user: 3 # Najib
+  calibre_link: "https://calibre.inkwellcollective.com/books/the-eye-of-the-world"
+  isbn_10: "0812511816"
+  isbn_13: "978-0812511819"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 16
+  title: Atomic Habits
+  author: James Clear
+  circuit: 1 # Nonfiction
+  user: 1 # Tom
+  calibre_link: "https://calibre.inkwellcollective.com/books/atomic-habits"
+  isbn_10: "0735211299"
+  isbn_13: "978-0735211292"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 17
+  title: American Gods
+  author: Neil Gaiman
+  circuit: 2 # Fiction
+  user: 2 # Tomas
+  calibre_link: "https://calibre.inkwellcollective.com/books/american-gods"
+  isbn_10: "0062080237"
+  isbn_13: "978-0062080233"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
+- id: 18
+  title: Entangled Life
+  author: Merlin Sheldrake
+  circuit: 1 # Nonfiction
+  user: 5 # Noah
+  calibre_link: "https://calibre.inkwellcollective.com/books/entangled-life"
+  isbn_10: "0525510319"
+  isbn_13: "978-0525510314"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
