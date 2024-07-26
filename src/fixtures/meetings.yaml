@@ -1,72 +1,109 @@
 ---
 - id: 1
-  book: 1 # The Immortality Key
-  date: "2023-08-22T19:00:00.000"
+  book_id: 1 # The Immortality Key
+  date: "2023-08-22T19:00:00.000-04:00"
   location: "Tom's House"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 2
-  book: 2 # The Children of Ash and Elm
-  date: "2023-09-29T18:00:00.000"
+  book_id: 2 # The Children of Ash and Elm
+  date: "2023-09-29T18:00:00.000-04:00"
   location: "Tom's House"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 3
-  book: 3 # Rules for Radicals
-  date: "2023-10-13T19:00:00.000"
+  book_id: 3 # Rules for Radicals
+  date: "2023-10-13T19:00:00.000-04:00"
   location: "Lou's Cigar Bar"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 4
-  book: 4 # The Name of the Wind
-  date: "2023-11-08T18:00:00.000"
+  book_id: 4 # The Name of the Wind
+  date: "2023-11-08T18:00:00.000-04:00"
   location: "Lou's Cigar Bar"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 5
-  book: 5 # The Devil in White City
-  date: "2023-11-15T18:00:00.000"
+  book_id: 5 # The Devil in White City
+  date: "2023-11-15T18:00:00.000-04:00"
   location: "Lou's Cigar Bar"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 6
-  book: 6 # The Wise Man's Fear
-  date: "2024-01-24T18:00:00.000"
+  book_id: 6 # The Wise Man's Fear
+  date: "2024-01-24T18:00:00.000-04:00"
   location: "Tom's House"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 7
-  book: 7 # Magician's of the Gods
-  date: "2024-01-24T20:00:00.000"
+  book_id: 7 # Magician's of the Gods
+  date: "2024-01-24T20:00:00.000-04:00"
   location: "Tom's House"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 8
-  book: 9 # Food of the Gods
-  date: "2024-02-09T18:00:00.000"
+  book_id: 9 # Food of the Gods
+  date: "2024-02-09T18:00:00.000-04:00"
   location: "Lou's Cigar Bar"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 9
-  book: 8 # Columbus Day
-  date: "2024-02-26T19:30:00.000"
+  book_id: 8 # Columbus Day
+  date: "2024-02-26T19:30:00.000-04:00"
   location: "Tom's House"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 10
-  book: 10 # The Anarchist's Handbook
-  date: "2024-03-25T19:00:00.000"
+  book_id: 10 # The Anarchist's Handbook
+  date: "2024-03-25T19:00:00.000-04:00"
   location: "Lou's Cigar Bar"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 11
-  book: 11 # The Way of Kings
-  date: "2024-04-26T19:30:00.000"
+  book_id: 11 # The Way of Kings
+  date: "2024-04-26T19:30:00.000-04:00"
   location: "Lou's Cigar Bar"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 12
-  book: 12 # Conspiracy: Peter Thiel, Hulk Hogan, Gawker, and the Anatomy of Intrigue
-  date: "2024-05-16T19:30:00.000"
+  book_id: 12 # Conspiracy: Peter Thiel, Hulk Hogan, Gawker, and the Anatomy of Intrigue
+  date: "2024-05-16T19:30:00.000-04:00"
   location: "Lou's Cigar Bar"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 13
-  book: 13 # The Final Empire
-  date: "2024-06-05T19:30:00.000"
+  book_id: 13 # The Final Empire
+  date: "2024-06-05T19:30:00.000-04:00"
   location: "Lou's Cigar Bar"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 14
-  book: 14 # In Cold Blood
-  date: "2024-06-27T19:30:00.000"
+  book_id: 14 # In Cold Blood
+  date: "2024-06-27T19:30:00.000-04:00"
   location: "Lou's Cigar Bar"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 15
-  book: 15 # The Eye of the World
-  date: "2024-07-19T19:00:00.000"
+  book_id: 15 # The Eye of the World
+  date: "2024-07-19T19:00:00.000-04:00"
   location: "Tom's House"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 16
-  book: 16 # Atomic Habits
-  date: "2024-07-24T18:30:00.000"
+  book_id: 16 # Atomic Habits
+  date: "2024-07-24T18:30:00.000-04:00"
   location: "Lou's Cigar Bar"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 17
-  book: 17 # American Gods
-  date: "2024-08-15T19:00:00.000"
+  book_id: 17 # American Gods
+  date: "2024-08-15T19:00:00.000-04:00"
   location: "TBD"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"
 - id: 18
-  book: 18 # Entangled Life
-  date: "2024-08-29T19:45:00.000"
+  book_id: 18 # Entangled Life
+  date: "2024-08-29T19:45:00.000-04:00"
+  location: "TBD"
+  created_at: "2024-07-20T12:34:56.789"
+  updated_at: "2024-07-20T12:34:56.789"

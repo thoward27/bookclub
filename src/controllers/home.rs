@@ -11,5 +11,5 @@ pub async fn redirect() -> impl IntoResponse {
 }
 
 pub fn routes() -> Routes {
-    Routes::new().add("/", get(redirect))
+    Routes::new().prefix("home").add("/", get(redirect))
 }
