@@ -1,4 +1,5 @@
 pub mod _entities;
+pub mod books;
 pub mod circuits;
 pub mod notes;
 pub mod picks;
