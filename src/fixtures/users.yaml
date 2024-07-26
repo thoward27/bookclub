@@ -4,7 +4,7 @@
   email: user1@example.com
   password: "$argon2id$v=19$m=19456,t=2,p=1$ETQBx4rTgNAZhSaeYZKOZg$eYTdH26CRT6nUJtacLDEboP0li6xUwUF/q5nSlQ8uuc"
   api_key: lo-95ec80d7-cb60-4b70-9b4b-9ef74cb88758
-  name: user1
+  name: Tom
   created_at: "2023-11-12T12:34:56.789"
   updated_at: "2023-11-12T12:34:56.789"
 - id: 2
@@ -12,6 +12,38 @@
   email: user2@example.com
   password: "$argon2id$v=19$m=19456,t=2,p=1$ETQBx4rTgNAZhSaeYZKOZg$eYTdH26CRT6nUJtacLDEboP0li6xUwUF/q5nSlQ8uuc"
   api_key: lo-153561ca-fa84-4e1b-813a-c62526d0a77e
-  name: user2
+  name: Tomas
+  created_at: "2023-11-12T12:34:56.789"
+  updated_at: "2023-11-12T12:34:56.789"
+- id: 3
+  pid: 33333333-3333-3333-3333-333333333333
+  email: user3@example.com
+  password: "$argon2id$v=19$m=19456,t=2,p=1$ETQBx4rTgNAZhSaeYZKOZg$eYTdH26CRT6nUJtacLDEboP0li6xUwUF/q5nSlQ8uuc"
+  api_key: lo-3b3b3b3b-3b3b-3b3b-3b3b-3b3b3b3b3b3b
+  name: Najib 
+  created_at: "2023-11-12T12:34:56.789"
+  updated_at: "2023-11-12T12:34:56.789"
+- id: 4
+  pid: 44444444-4444-4444-4444-444444444444
+  email: user4@example.com
+  password: "$argon2id$v=19$m=19456,t=2,p=1$ETQBx4rTgNAZhSaeYZKOZg$eYTdH26CRT6nUJtacLDEboP0li6xUwUF/q5nSlQ8uuc"
+  api_key: lo-4c4c4c4c-4c4c-4c4c-4c4c-4c4c4c4c4c4c
+  name: Bryce
+  created_at: "2023-11-12T12:34:56.789"
+  updated_at: "2023-11-12T12:34:56.789"
+- id: 5
+  pid: 55555555-5555-5555-5555-555555555555
+  email: user5@example.com
+  password: "$argon2id$v=19$m=19456,t=2,p=1$ETQBx4rTgNAZhSaeYZKOZg$eYTdH26CRT6nUJtacLDEboP0li6xUwUF/q5nSlQ8uuc"
+  api_key: lo-5d5d5d5d-5d5d-5d5d-5d5d-5d5d5d5d5d5d
+  name: Noah
+  created_at: "2023-11-12T12:34:56.789"
+  updated_at: "2023-11-12T12:34:56.789"
+- id: 6
+  pid: 66666666-6666-6666-6666-666666666666
+  email: user6@example.com
+  password: "$argon2id$v=19$m=19456,t=2,p=1$ETQBx4rTgNAZhSaeYZKOZg$eYTdH26CRT6nUJtacLDEboP0li6xUwUF/q5nSlQ8uuc"
+  api_key: lo-6e6e6e6e-6e6e-6e6e-6e6e-6e6e6e6e6e6e
+  name: Jason
   created_at: "2023-11-12T12:34:56.789"
   updated_at: "2023-11-12T12:34:56.789"
