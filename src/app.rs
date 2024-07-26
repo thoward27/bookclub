@@ -16,7 +16,7 @@ use sea_orm::DatabaseConnection;
 
 use crate::{
     controllers, initializers,
-    models::_entities::{notes, picks, users},
+    models::_entities::{circuits, notes, picks, users},
     tasks,
     workers::downloader::DownloadWorker,
 };
@@ -69,6 +69,7 @@ impl Hooks for App {
         truncate_table(db, users::Entity).await?;
         truncate_table(db, notes::Entity).await?;
         truncate_table(db, picks::Entity).await?;
+        truncate_table(db, circuits::Entity).await?;
         Ok(())
     }
 
@@ -76,6 +77,8 @@ impl Hooks for App {
         db::seed::<users::ActiveModel>(db, &base.join("users.yaml").display().to_string()).await?;
         db::seed::<notes::ActiveModel>(db, &base.join("notes.yaml").display().to_string()).await?;
         db::seed::<picks::ActiveModel>(db, &base.join("picks.yaml").display().to_string()).await?;
+        db::seed::<picks::ActiveModel>(db, &base.join("circuits.yaml").display().to_string())
+            .await?;
         Ok(())
     }
 }
