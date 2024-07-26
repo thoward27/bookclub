@@ -2,6 +2,7 @@
 
 pub mod prelude;
 
+pub mod circuits;
 pub mod notes;
 pub mod picks;
 pub mod users;
