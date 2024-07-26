@@ -1,0 +1,72 @@
+---
+- id: 1
+  book: 1 # The Immortality Key
+  date: "2023-08-22T19:00:00.000"
+  location: "Tom's House"
+- id: 2
+  book: 2 # The Children of Ash and Elm
+  date: "2023-09-29T18:00:00.000"
+  location: "Tom's House"
+- id: 3
+  book: 3 # Rules for Radicals
+  date: "2023-10-13T19:00:00.000"
+  location: "Lou's Cigar Bar"
+- id: 4
+  book: 4 # The Name of the Wind
+  date: "2023-11-08T18:00:00.000"
+  location: "Lou's Cigar Bar"
+- id: 5
+  book: 5 # The Devil in White City
+  date: "2023-11-15T18:00:00.000"
+  location: "Lou's Cigar Bar"
+- id: 6
+  book: 6 # The Wise Man's Fear
+  date: "2024-01-24T18:00:00.000"
+  location: "Tom's House"
+- id: 7
+  book: 7 # Magician's of the Gods
+  date: "2024-01-24T20:00:00.000"
+  location: "Tom's House"
+- id: 8
+  book: 9 # Food of the Gods
+  date: "2024-02-09T18:00:00.000"
+  location: "Lou's Cigar Bar"
+- id: 9
+  book: 8 # Columbus Day
+  date: "2024-02-26T19:30:00.000"
+  location: "Tom's House"
+- id: 10
+  book: 10 # The Anarchist's Handbook
+  date: "2024-03-25T19:00:00.000"
+  location: "Lou's Cigar Bar"
+- id: 11
+  book: 11 # The Way of Kings
+  date: "2024-04-26T19:30:00.000"
+  location: "Lou's Cigar Bar"
+- id: 12
+  book: 12 # Conspiracy: Peter Thiel, Hulk Hogan, Gawker, and the Anatomy of Intrigue
+  date: "2024-05-16T19:30:00.000"
+  location: "Lou's Cigar Bar"
+- id: 13
+  book: 13 # The Final Empire
+  date: "2024-06-05T19:30:00.000"
+  location: "Lou's Cigar Bar"
+- id: 14
+  book: 14 # In Cold Blood
+  date: "2024-06-27T19:30:00.000"
+  location: "Lou's Cigar Bar"
+- id: 15
+  book: 15 # The Eye of the World
+  date: "2024-07-19T19:00:00.000"
+  location: "Tom's House"
+- id: 16
+  book: 16 # Atomic Habits
+  date: "2024-07-24T18:30:00.000"
+  location: "Lou's Cigar Bar"
+- id: 17
+  book: 17 # American Gods
+  date: "2024-08-15T19:00:00.000"
+  location: "TBD"
+- id: 18
+  book: 18 # Entangled Life
+  date: "2024-08-29T19:45:00.000"
