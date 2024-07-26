@@ -2,6 +2,7 @@
 
 pub use super::books::Entity as Books;
 pub use super::circuits::Entity as Circuits;
+pub use super::meetings::Entity as Meetings;
 pub use super::notes::Entity as Notes;
 pub use super::picks::Entity as Picks;
 pub use super::users::Entity as Users;

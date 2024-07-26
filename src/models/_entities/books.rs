@@ -32,6 +32,8 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Circuits,
+    #[sea_orm(has_many = "super::meetings::Entity")]
+    Meetings,
     #[sea_orm(
         belongs_to = "super::users::Entity",
         from = "Column::UserId",
@@ -45,6 +47,12 @@ pub enum Relation {
 impl Related<super::circuits::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Circuits.def()
+    }
+}
+
+impl Related<super::meetings::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Meetings.def()
     }
 }
 
