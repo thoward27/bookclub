@@ -2,12 +2,10 @@
 
 use crate::common;
 use crate::models::_entities::picks;
-
+use crate::views::picks::PicksTemplate;
 use axum::debug_handler;
 use loco_rs::prelude::*;
 use serde_json::json;
-
-use crate::views::picks::PicksTemplate;
 
 #[debug_handler]
 async fn get_picks(State(ctx): State<AppContext>) -> Result<impl IntoResponse> {
