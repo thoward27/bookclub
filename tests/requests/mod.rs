@@ -1,8 +1,8 @@
-mod auth;
-mod notes;
 mod prepare_data;
+
+mod auth;
+mod books;
+mod home;
+mod notes;
+mod picks;
 mod user;
-
-pub mod picks;
-
-pub mod home;
