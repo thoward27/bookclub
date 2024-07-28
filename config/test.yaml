@@ -2,10 +2,7 @@
 settings:
   title: Inkwell Collective
   auth:
-    proxy:
-      enabled: true
-      header_name: X-User-Email
-      auto_sign_up: true
+    anonymous: true
 
 # Application logging configuration
 logger:
