@@ -19,10 +19,16 @@ backend:
     RUN cargo build --release
     SAVE ARTIFACT target/release/bookclub-cli
 
-prod:
+build:
     FROM debian:stable-slim
     COPY --dir config .
     COPY +frontend/dist /frontend/dist
     COPY +backend/bookclub-cli .
     ENTRYPOINT ["./bookclub-cli"]
-    SAVE IMAGE --push thoward27/bookclub:latest 
+    ARG --required GIT_BRANCH
+    ARG --required GIT_COMMIT
+    ARG --required TAG=latest
+    SAVE IMAGE --push \
+        thoward27/bookclub:$TAG \
+        thoward27/bookclub:$GIT_BRANCH \
+        thoward27/bookclub:$GIT_COMMIT
