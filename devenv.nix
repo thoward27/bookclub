@@ -20,32 +20,14 @@ in
   '';
 
   scripts = {
-    # This script was extracted to reduce the double '' needed to nest the watchexec commands.
     backend-watch.exec = ''
       watchexec \
-        --ignore-file frontend/.gitignore \
         --ignore '*.nix' \
-        --restart \
-        'cd frontend && pnpm run build && cd - && cargo loco start --binding 127.0.0.1' 
-    '';
-    # Install is broken out because when it is run in the backend-watch it doom-cycles.
-    pnpm-install-watch.exec = ''
-    watchexec \
-      --watch frontend/package.json \
-      --restart \
-      'cd frontend && pnpm install && cd - && backend-watch'
-    '';
-    htmx-watch.exec = ''
-      watchexec \
         --watch templates \
         --watch src \
         --restart \
-        cargo loco start --binding 127.0.0.1
+        'cargo loco start --binding 127.0.0.1' 
     '';
-  };
-
-  processes = {
-    backend.exec = "htmx-watch";
   };
 
   services = {
