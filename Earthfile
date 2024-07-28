@@ -3,15 +3,6 @@
 VERSION 0.8
 FROM scratch
 
-frontend:
-    FROM node:latest
-    RUN npm install -g pnpm
-    COPY --dir frontend .
-    WORKDIR frontend
-    RUN pnpm install
-    RUN pnpm run build
-    SAVE ARTIFACT dist
-
 backend:
     FROM rust:latest
     COPY --dir assets migration src .
@@ -22,13 +13,28 @@ backend:
 build:
     FROM debian:stable-slim
     COPY --dir config .
-    COPY +frontend/dist /frontend/dist
     COPY +backend/bookclub-cli .
     ENTRYPOINT ["./bookclub-cli"]
-    ARG --required GIT_BRANCH
-    ARG --required GIT_COMMIT
-    ARG --required TAG=latest
+    ARG --required EARTHLY_GIT_HASH
+    ARG --required EARTHLY_GIT_BRANCH
     SAVE IMAGE --push \
-        thoward27/bookclub:$TAG \
-        thoward27/bookclub:$GIT_BRANCH \
-        thoward27/bookclub:$GIT_COMMIT
+        thoward27/bookclub:$EARTHLY_GIT_HASH \
+        thoward27/bookclub:$EARTHLY_GIT_BRANCH
+
+levant-render:
+    FROM hashicorp/levant
+    WORKDIR /usr/local/src
+    COPY --dir levant/ ./
+    COPY Nomadfile ./
+    FOR vars IN $(ls ./levant)
+        RUN levant render -var-file=./levant/$vars ./Nomadfile > ./Nomadfile.$vars
+    END
+    SAVE ARTIFACT --force Nomadfile.*
+
+nomad-validate:
+    FROM hashicorp/nomad
+    WORKDIR /usr/local/src
+    COPY +levant-render/Nomadfile.* ./
+    FOR nomadfile IN $(ls ./Nomadfile.*)
+        RUN nomad validate $nomadfile
+    END
