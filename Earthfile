@@ -5,7 +5,7 @@ FROM scratch
 
 backend:
     FROM rust:latest
-    COPY --dir assets migration src .
+    COPY --dir assets migration src templates .
     COPY Cargo.toml Cargo.lock .
     RUN cargo build --release
     SAVE ARTIFACT target/release/bookclub-cli
