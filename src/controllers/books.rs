@@ -1,3 +1,4 @@
+use crate::common::middlewares::auth::Auth;
 use crate::models::_entities::{books, circuits, users};
 use crate::views::books::{BookTemplate, BooksTemplate};
 use axum::debug_handler;
@@ -6,7 +7,10 @@ use loco_rs::prelude::*;
 use sea_orm::QueryOrder;
 
 #[debug_handler]
-async fn get_books(State(ctx): State<AppContext>) -> Result<impl IntoResponse> {
+async fn get_books(
+    _auth: Auth<users::Model>,
+    State(ctx): State<AppContext>,
+) -> Result<impl IntoResponse> {
     let books = books::Entity::find()
         .order_by_desc(books::Column::Id)
         .all(&ctx.db)
