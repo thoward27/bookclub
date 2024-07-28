@@ -1,6 +1,11 @@
 # Loco configuration file documentation
 settings:
   title: Inkwell Collective
+  auth:
+    proxy:
+      enabled: true
+      header_name: X-User-Email
+      auto_sign_up: true
 
 # Application logging configuration
 logger:

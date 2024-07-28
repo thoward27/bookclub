@@ -1,6 +1,10 @@
+use crate::common::middlewares::auth;
 use async_trait::async_trait;
 use chrono::offset::Local;
 use loco_rs::{auth::jwt, hash, prelude::*};
+use rand::distributions::Alphanumeric;
+use rand::rngs::StdRng;
+use rand::{Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -70,6 +74,59 @@ impl Authenticable for super::_entities::users::Model {
 
     async fn find_by_claims_key(db: &DatabaseConnection, claims_key: &str) -> ModelResult<Self> {
         Self::find_by_pid(db, claims_key).await
+    }
+}
+
+#[async_trait]
+impl auth::Authenticable for super::_entities::users::Model {
+    async fn find_by_email(db: &DatabaseConnection, email: &str) -> ModelResult<Self> {
+        Self::find_by_email(db, email).await
+    }
+
+    async fn find_or_create_by_email(db: &DatabaseConnection, email: &str) -> ModelResult<Self> {
+        match Self::find_by_email(db, email).await {
+            Ok(user) => Ok(user),
+            Err(_) => {
+                let mut rng = StdRng::from_entropy();
+                let password = (&mut rng)
+                    .sample_iter(&Alphanumeric)
+                    .take(128)
+                    .map(char::from)
+                    .collect();
+                Self::create_with_password(
+                    db,
+                    &RegisterParams {
+                        email: email.to_string(),
+                        password,
+                        name: email.split("@").next().unwrap().to_string(),
+                    },
+                )
+                .await
+            }
+        }
+    }
+
+    async fn anonymous_user(db: &DatabaseConnection) -> ModelResult<Self> {
+        match Self::find_by_email(db, "anonymous@localhost").await {
+            Ok(user) => Ok(user),
+            Err(_) => {
+                let mut rng = StdRng::from_entropy();
+                let password = (&mut rng)
+                    .sample_iter(&Alphanumeric)
+                    .take(128)
+                    .map(char::from)
+                    .collect();
+                Self::create_with_password(
+                    db,
+                    &RegisterParams {
+                        email: "anonymous@localhost".to_string(),
+                        password,
+                        name: "Anonymous".to_string(),
+                    },
+                )
+                .await
+            }
+        }
     }
 }
 

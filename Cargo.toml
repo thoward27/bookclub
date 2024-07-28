@@ -39,6 +39,7 @@ unic-langid = "0.9.4"
 askama_axum = { version = "0.4.0", features = ["markdown"] }
 askama = { version = "0.12.1", features = ["with-axum"] }
 futures = "0.3.30"
+rand = "0.8.5"
 
 [[bin]]
 name = "bookclub-cli"
