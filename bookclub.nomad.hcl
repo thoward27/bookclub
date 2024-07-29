@@ -19,7 +19,8 @@ job "bookclub" {
   }
 
   group "server" {
-    count = 2
+    count = 1
+
     network {
       port "http" {}
     }
@@ -27,24 +28,24 @@ job "bookclub" {
     service {
       name = "bookclub-prod"
       port = "http"
-      // check {
-      //   type     = "http"
-      //   port     = "http"
-      //   path     = "/_health"
-      //   timeout  = "1s"
-      //   interval = "10s"
-      //   check_restart {
-      //     limit = 5
-      //     grace = "30s"
-      //   }
-      // }
+      check {
+        type     = "http"
+        port     = "http"
+        path     = "/_ping"
+        timeout  = "1s"
+        interval = "10s"
+        check_restart {
+          limit = 5
+          grace = "30s"
+        }
+      }
       tags = [
         "traefik.enable=true",
         "traefik.http.routers.bookclub.rule=Host(`bookclub.tomhoward.codes`)",
-        "traefik.http.routers.traefik.entrypoints=websecure",
-        "traefik.http.routers.tls.certresovler=letsencrypt",
-        "traefik.http.routers.traefik.middlewares=authelia@docker",
-        "traefik.http.services.traefik.loadbalancer.server.port=${NOMAD_PORT_http}"
+        "traefik.http.routers.bookclub.entrypoints=websecure",
+        "traefik.http.routers.bookclub.tls.certresovler=letsencrypt",
+        "traefik.http.routers.bookclub.middlewares=authelia@docker",
+        "traefik.http.services.bookclub.loadbalancer.server.port=${NOMAD_PORT_http}"
       ]
     }
 

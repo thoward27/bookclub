@@ -4,7 +4,7 @@ settings:
   auth:
     proxy:
       enabled: true
-      header_name: X-User-Email
+      header_name: Remote-Email
       auto_sign_up: true
 
 logger:
@@ -30,7 +30,7 @@ server:
       enable: true
     timeout_request:
       enable: true
-      timeout: 5000
+      timeout: 10000
     cors:
       enable: true
       # Set the value of the [`Access-Control-Allow-Origin`][mdn] header
