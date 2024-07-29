@@ -4,8 +4,8 @@ use loco_rs::prelude::*;
 
 pub async fn redirect() -> impl IntoResponse {
     Response::builder()
-        .status(StatusCode::MOVED_PERMANENTLY)
-        .header("Location", "/picks")
+        .status(StatusCode::FOUND)
+        .header("Location", "/books")
         .body(axum::body::Body::empty())
         .unwrap()
 }

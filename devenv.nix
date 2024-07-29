@@ -16,7 +16,6 @@ in
     cargo fmt --check
     cargo clippy
     cargo test
-    cargo loco task seed_data
   '';
 
   scripts = {
