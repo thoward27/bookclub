@@ -46,6 +46,11 @@ server:
       # max_age: 3600
     static:
       enable: false
+      must_exist: false
+      folder:
+        uri: "/"
+        path: "frontend/dist"
+      fallback: "frontend/dist/index.html"
 
 workers:
   # specifies the worker mode. Options:
