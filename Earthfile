@@ -8,6 +8,7 @@ backend:
     COPY --dir assets migration src templates .
     COPY Cargo.toml Cargo.lock .
     RUN cargo build --release
+    COPY config/production.yaml config/production.yaml
     SAVE ARTIFACT target/release/bookclub-cli
 
 build:
