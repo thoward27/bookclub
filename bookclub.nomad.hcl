@@ -99,7 +99,8 @@ job "bookclub" {
         image        = "thoward27/bookclub:main"
         force_pull   = true
         network_mode = "host"
-        command      = "worker"
+        command      = "start"
+        args         = ["--worker"]
       }
 
       resources {
