@@ -41,6 +41,10 @@ job "bookclub" {
       tags = [
         "traefik.enable=true",
         "traefik.http.routers.bookclub.rule=Host(`bookclub.tomhoward.codes`)"
+        "traefik.http.routers.traefik.entrypoints=websecure",
+        "traefik.http.routers.tls.certresovler=letsencrypt",
+        "traefik.http.routers.traefik.middlewares=authelia@docker",
+        "traefik.http.services.traefik.loadbalancer.server.port=${NOMAD_PORT_http}"
       ]
     }
 
