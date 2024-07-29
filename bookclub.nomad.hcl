@@ -64,8 +64,9 @@ job "bookclub" {
       }
 
       env {
-        PORT = "${NOMAD_PORT_http}"
-        HOST = "https://bookclub.tomhoward.codes"
+        PORT     = "${NOMAD_PORT_http}"
+        HOST     = "https://bookclub.tomhoward.codes"
+        LOCO_ENV = "production"
       }
 
       template {
