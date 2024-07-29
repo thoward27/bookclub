@@ -1,0 +1,88 @@
+# Loco configuration file documentation
+settings:
+  title: Inkwell Collective
+  auth:
+    proxy:
+      enabled: true
+      header_name: X-User-Email
+      auto_sign_up: true
+
+logger:
+  enable: true
+  level: warn
+  # Define the logging format. options: compact, pretty or json
+  format: compact
+  # By default the logger has filtering only logs that came from your code or logs that came from `loco` framework. to see all third party libraries
+  # Uncomment the line below to override to see all third party libraries you can enable this config and override the logger filters.
+  # override_filter: trace
+
+server:
+  # Port on which the server will listen. the server binding is 0.0.0.0:{PORT}
+  port: {{get_env(name="PORT", default="5150")}}
+  host: {{get_env(name="HOST", default="https://bookclub.tomhoward.codes")}}
+  middlewares:
+    limit_payload:
+      enable: true
+      body_limit: 5mb
+    logger:
+      enable: true
+    catch_panic:
+      enable: true
+    timeout_request:
+      enable: true
+      timeout: 5000
+    cors:
+      enable: true
+      # Set the value of the [`Access-Control-Allow-Origin`][mdn] header
+      # allow_origins:
+      #   - https://loco.rs
+      # Set the value of the [`Access-Control-Allow-Headers`][mdn] header
+      # allow_headers:
+      # - Content-Type
+      # Set the value of the [`Access-Control-Allow-Methods`][mdn] header
+      # allow_methods:
+      #   - POST
+      # Set the value of the [`Access-Control-Max-Age`][mdn] header in seconds
+      # max_age: 3600
+    static:
+      enable: false
+
+workers:
+  # specifies the worker mode. Options:
+  #   - BackgroundQueue - Workers operate asynchronously in the background, processing queued.
+  #   - ForegroundBlocking - Workers operate in the foreground and block until tasks are completed.
+  #   - BackgroundAsync - Workers operate asynchronously in the background, processing tasks with async capabilities.
+  mode: BackgroundAsync
+
+mailer:
+  smtp:
+    enable: true
+    host: localhost
+    port: 1025
+    secure: false
+    # auth:
+    #   user:
+    #   password:
+  stub: true
+
+database:
+  uri: {{get_env(name="DATABASE_URL", default="postgres://localhost:5432/loco_app")}}
+  enable_logging: false
+  connect_timeout: 500
+  idle_timeout: 500
+  min_connections: 1
+  max_connections: 20
+  auto_migrate: true
+  dangerously_truncate: false
+  dangerously_recreate: false
+
+queue:
+  uri: {{get_env(name="REDIS_URL", default="redis://127.0.0.1")}}
+  dangerously_flush: false
+
+auth:
+  # This auth method is not in use.
+  jwt:
+    secret: G7C0p193y2nXNGtMkSLW
+    expiration: 604800 # 7 days
+
