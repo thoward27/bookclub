@@ -27,17 +27,17 @@ job "bookclub" {
     service {
       name = "bookclub-prod"
       port = "http"
-      check {
-        type     = "http"
-        port     = "http"
-        path     = "/_health"
-        timeout  = "1s"
-        interval = "10s"
-        check_restart {
-          limit = 5
-          grace = "30s"
-        }
-      }
+      // check {
+      //   type     = "http"
+      //   port     = "http"
+      //   path     = "/_health"
+      //   timeout  = "1s"
+      //   interval = "10s"
+      //   check_restart {
+      //     limit = 5
+      //     grace = "30s"
+      //   }
+      // }
       tags = [
         "traefik2.enable=true",
         "traefik2.http.routers.bookclub.rule=Host(`bookclub.tomhoward.codes`)"
