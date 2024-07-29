@@ -1,19 +1,19 @@
 job "bookclub" {
   datacenters = ["*"]
-  type = "service"
+  type        = "service"
 
   update {
-    max_parallel = 1
-    min_healthy_time = "10s"
-    healthy_deadline = "3m"
+    max_parallel      = 1
+    min_healthy_time  = "10s"
+    healthy_deadline  = "3m"
     progress_deadline = "10m"
-    auto_revert = false
-    canary = 0
+    auto_revert       = false
+    canary            = 0
   }
 
   migrate {
-    max_parallel = 1
-    health_check = "checks"
+    max_parallel     = 1
+    health_check     = "checks"
     min_healthy_time = "10s"
     healthy_deadline = "5m"
   }
@@ -28,10 +28,10 @@ job "bookclub" {
       name = "bookclub-prod"
       port = "http"
       check {
-        type = "http"
-        port = "http"
-        path = "/_health"
-        timeout = "1s"
+        type     = "http"
+        port     = "http"
+        path     = "/_health"
+        timeout  = "1s"
         interval = "10s"
         check_restart {
           limit = 5
@@ -47,13 +47,15 @@ job "bookclub" {
     task "bookclub" {
       driver = "docker"
       config {
-        image = "thoward27/bookclub:main"
-        ports = ["http"]
-        command = "start"
+        image        = "thoward27/bookclub:main"
+        force_pull   = true
+        network_mode = "host"
+        ports        = ["http"]
+        command      = "start"
       }
 
       resources {
-        cpu = 100
+        cpu    = 100
         memory = 64
       }
 
@@ -62,12 +64,12 @@ job "bookclub" {
       }
 
       env {
-        PORT="${NOMAD_PORT_http}"
-        HOST="https://bookclub.tomhoward.codes"
+        PORT = "${NOMAD_PORT_http}"
+        HOST = "https://bookclub.tomhoward.codes"
       }
 
       template {
-        data = <<EOH
+        data        = <<EOH
           {{ with secret "database/creds/bookclub-prod" }}
           DATABASE_URL="postgres://{{.Data.username}}:{{.Data.password}}@127.0.0.1:5432/bookclub_production"
           {{ end }}
@@ -77,7 +79,7 @@ job "bookclub" {
           {{ end }}
         EOH
         destination = "secrets/service.env"
-        env = true
+        env         = true
       }
     }
   }
@@ -108,21 +110,21 @@ job "bookclub" {
     restart {
       attempts = 2
       interval = "30m"
-      delay = "15s"
-      mode = "fail"
+      delay    = "15s"
+      mode     = "fail"
     }
 
     ephemeral_disk {
-      sticky = true
+      sticky  = true
       migrate = true
-      size = 300
+      size    = 300
     }
 
     task "redis" {
       driver = "docker"
       config {
-        image = "redis:7"
-        ports = ["db"]
+        image          = "redis:7"
+        ports          = ["db"]
         auth_soft_fail = true
       }
 
