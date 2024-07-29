@@ -1,4 +1,6 @@
+use crate::models::_entities::{books, circuits, users};
 use askama_axum::Template;
+use futures::stream::{self, StreamExt};
 use loco_rs::prelude::*;
 use serde::Serialize;
 use std::vec::Vec;
@@ -29,5 +31,37 @@ pub struct BooksTemplate {
 impl ViewRenderer for BooksTemplate {
     fn render<S: Serialize>(&self, _key: &str, _data: S) -> Result<String> {
         Ok(Template::render(self).unwrap())
+    }
+}
+
+impl BooksTemplate {
+    pub async fn new(books: Vec<books::Model>, ctx: DatabaseConnection) -> Self {
+        Self {
+            books: stream::iter(books)
+                .then(|book| async {
+                    let circuit = book
+                        .find_related(circuits::Entity)
+                        .one(&ctx)
+                        .await
+                        .unwrap()
+                        .unwrap();
+                    let user = book
+                        .find_related(users::Entity)
+                        .one(&ctx)
+                        .await
+                        .unwrap()
+                        .unwrap();
+                    BookTemplate {
+                        title: book.title,
+                        author: book.author,
+                        circuit: circuit.title,
+                        username: user.name,
+                        isbn10: book.isbn10,
+                        isbn13: book.isbn13,
+                    }
+                })
+                .collect::<Vec<BookTemplate>>()
+                .await,
+        }
     }
 }

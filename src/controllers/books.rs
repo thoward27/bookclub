@@ -1,10 +1,33 @@
 use crate::common::middlewares::auth::Auth;
 use crate::models::_entities::{books, circuits, users};
-use crate::views::books::{BookTemplate, BooksTemplate};
+use crate::views::books::BooksTemplate;
 use axum::debug_handler;
-use futures::stream::{self, StreamExt};
 use loco_rs::prelude::*;
+use migration::extension::postgres::PgExpr;
+use sea_orm::sea_query::Expr;
 use sea_orm::QueryOrder;
+use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
+
+#[debug_handler]
+async fn get_books_by_circuit(
+    _auth: Auth<users::Model>,
+    State(ctx): State<AppContext>,
+    Path(name): Path<String>,
+) -> Result<impl IntoResponse> {
+    let circuit = circuits::Entity::find()
+        .filter(Expr::col(circuits::Column::Title).ilike(name))
+        .one(&ctx.db)
+        .await
+        .unwrap()
+        .unwrap();
+    let books = books::Entity::find()
+        .filter(books::Column::CircuitId.eq(circuit.id))
+        .order_by_desc(books::Column::Id)
+        .all(&ctx.db)
+        .await
+        .unwrap();
+    Ok(BooksTemplate::new(books, ctx.db).await)
+}
 
 #[debug_handler]
 async fn get_books(
@@ -16,34 +39,12 @@ async fn get_books(
         .all(&ctx.db)
         .await
         .unwrap();
-    let books = stream::iter(books)
-        .then(|book| async {
-            let circuit = book
-                .find_related(circuits::Entity)
-                .one(&ctx.db)
-                .await
-                .unwrap()
-                .unwrap();
-            let user = book
-                .find_related(users::Entity)
-                .one(&ctx.db)
-                .await
-                .unwrap()
-                .unwrap();
-            BookTemplate {
-                title: book.title,
-                author: book.author,
-                circuit: circuit.title,
-                username: user.name,
-                isbn10: book.isbn10,
-                isbn13: book.isbn13,
-            }
-        })
-        .collect::<Vec<BookTemplate>>()
-        .await;
-    Ok(BooksTemplate { books })
+    Ok(BooksTemplate::new(books, ctx.db).await)
 }
 
 pub fn routes() -> Routes {
-    Routes::new().prefix("books").add("/", get(get_books))
+    Routes::new()
+        .prefix("books")
+        .add("/", get(get_books))
+        .add("/circuit/:name", get(get_books_by_circuit))
 }
