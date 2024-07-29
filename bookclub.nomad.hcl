@@ -21,9 +21,7 @@ job "bookclub" {
   group "server" {
     count = 2
     network {
-      port "http" {
-        to = 5150
-      }
+      port "http" {}
     }
 
     service {
@@ -64,7 +62,7 @@ job "bookclub" {
       }
 
       env {
-        PORT=5150
+        PORT="${NOMAD_PORT_http}"
         HOST="https://bookclub.tomhoward.codes"
       }
 
