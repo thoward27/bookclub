@@ -13,6 +13,7 @@ backend:
 
 build:
     FROM debian:stable-slim
+    WORKDIR /usr/local/src
     COPY --dir config assets .
     COPY +backend/bookclub-cli .
     ENTRYPOINT ["./bookclub-cli"]
