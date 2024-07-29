@@ -39,8 +39,8 @@ job "bookclub" {
       //   }
       // }
       tags = [
-        "traefik2.enable=true",
-        "traefik2.http.routers.bookclub.rule=Host(`bookclub.tomhoward.codes`)"
+        "traefik.enable=true",
+        "traefik.http.routers.bookclub.rule=Host(`bookclub.tomhoward.codes`)"
       ]
     }
 
