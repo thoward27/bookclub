@@ -13,7 +13,7 @@ backend:
 
 build:
     FROM debian:stable-slim
-    COPY --dir config .
+    COPY --dir config assets .
     COPY +backend/bookclub-cli .
     ENTRYPOINT ["./bookclub-cli"]
     ARG --required EARTHLY_GIT_HASH
