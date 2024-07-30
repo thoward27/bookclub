@@ -40,6 +40,7 @@ askama_axum = { version = "0.4.0", features = ["markdown"] }
 askama = { version = "0.12.1", features = ["with-axum"] }
 futures = "0.3.30"
 rand = "0.8.5"
+itertools = "0.13.0"
 
 [[bin]]
 name = "bookclub-cli"

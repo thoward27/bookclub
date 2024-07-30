@@ -7,3 +7,5 @@ mod home;
 mod notes;
 mod picks;
 mod user;
+
+pub mod meetings;
