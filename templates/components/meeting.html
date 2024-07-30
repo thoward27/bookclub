@@ -1,0 +1,38 @@
+<button type="button" class="list-group-item list-group-item-action" data-bs-toggle="modal" style="border: none;"
+    data-bs-target="#{{ meeting.id }}-modal">
+    <div class="row">
+        <div class="col-sm-3">
+            <h5 id="{{ meeting.id }}-time" _="init js 
+                        let date = new Date('{{ meeting.date.to_rfc3339() }}');
+                        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    end
+                    put it into my.innerHTML
+                ">
+                {{ meeting.date.format("%H:%M %Z") }}
+            </h5>
+        </div>
+        <div class="col-sm">
+            <h5>{{ book.title }}</h5>
+        </div>
+        <div class="col-sm">
+            <h5>{{ meeting.location }}</h5>
+        </div>
+    </div>
+</button>
+<!-- Modal -->
+<div class="modal fade" id="{{ meeting.id }}-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="{{ meeting.id }}-modal-label">{{ book.title }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
