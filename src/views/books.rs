@@ -6,7 +6,7 @@ use serde::Serialize;
 use std::vec::Vec;
 
 #[derive(Template, Debug, Clone)]
-#[template(path = "book.html", escape = "none")]
+#[template(path = "components/book.html", escape = "none")]
 pub struct BookTemplate {
     pub title: String,
     pub author: String,

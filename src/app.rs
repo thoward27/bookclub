@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use async_trait::async_trait;
-use axum::Router as AxumRouter;
+use axum::{routing::get, Router as AxumRouter};
 use loco_rs::{
     app::{AppContext, Hooks, Initializer},
     boot::{create_app, BootResult, StartMode},
@@ -51,6 +51,7 @@ impl Hooks for App {
 
     fn routes(_ctx: &AppContext) -> AppRoutes {
         AppRoutes::with_default_routes()
+            .add_route(controllers::circuits::routes())
             .add_route(controllers::books::routes())
             .add_route(controllers::home::routes())
             .add_route(controllers::picks::routes())
@@ -60,7 +61,7 @@ impl Hooks for App {
     }
 
     async fn after_routes(router: AxumRouter, _ctx: &AppContext) -> Result<AxumRouter> {
-        Ok(router.fallback(controllers::home::redirect))
+        Ok(router.route("/", get(controllers::home::redirect)))
     }
 
     fn connect_workers<'a>(p: &'a mut Processor, ctx: &'a AppContext) {
