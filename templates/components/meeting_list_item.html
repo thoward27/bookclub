@@ -1,5 +1,10 @@
 <button type="button" class="list-group-item list-group-item-action" data-bs-toggle="modal" style="border: none;"
-    data-bs-target="#{{ meeting.id }}-modal">
+    data-bs-target="#modal-{{ meeting.id }}"
+    hx-get="/meetings/{{ meeting.id }}"
+    hx-trigger="click"
+    hx-target="#modal-{{ meeting.id }} .modal-body"
+    hx-swap="innerHTML"
+    >
     <div class="row">
         <div class="col-sm-3">
             <h5 id="{{ meeting.id }}-time" _="init js 
@@ -15,17 +20,17 @@
             <h5>{{ book.title }}</h5>
         </div>
         <div class="col-sm">
-            <h5>{{ meeting.location }}</h5>
+            <h5 class="meeting-{{ meeting.id }}-location">{{ meeting.location }}</h5>
         </div>
     </div>
 </button>
 <!-- Modal -->
-<div class="modal fade" id="{{ meeting.id }}-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="modal-{{ meeting.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="{{ meeting.id }}-modal-label">{{ book.title }}</h1>
+                <h1 class="modal-title fs-5" id="modal-{{ meeting.id }}-label">{{ book.title }}</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
