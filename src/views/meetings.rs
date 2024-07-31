@@ -8,14 +8,27 @@ use serde::Serialize;
 use std::vec::Vec;
 
 #[derive(Template, Debug, Clone)]
-#[template(path = "components/meeting.html", escape = "none")]
-pub struct MeetingTemplate {
+#[template(path = "components/meeting_list_item.html", escape = "none")]
+pub struct MeetingListItem {
     pub book: books::Model,
     pub user: users::Model,
     pub meeting: meetings::Model,
 }
 
-impl ViewRenderer for MeetingTemplate {
+impl ViewRenderer for MeetingListItem {
+    fn render<S: Serialize>(&self, _key: &str, _data: S) -> Result<String> {
+        Ok(Template::render(self).unwrap())
+    }
+}
+
+#[derive(Template, Debug, Clone)]
+#[template(path = "components/meeting_detail.html")]
+pub struct MeetingDetail {
+    pub meeting: meetings::Model,
+    pub editor: bool,
+}
+
+impl ViewRenderer for MeetingDetail {
     fn render<S: Serialize>(&self, _key: &str, _data: S) -> Result<String> {
         Ok(Template::render(self).unwrap())
     }
@@ -24,7 +37,7 @@ impl ViewRenderer for MeetingTemplate {
 #[derive(Template, Debug, Clone)]
 #[template(path = "meetings.html", escape = "none")]
 pub struct MeetingsTemplate {
-    pub meetings: Vec<(NaiveDate, Vec<MeetingTemplate>)>,
+    pub meetings: Vec<(NaiveDate, Vec<MeetingListItem>)>,
 }
 
 impl ViewRenderer for MeetingsTemplate {
@@ -35,7 +48,7 @@ impl ViewRenderer for MeetingsTemplate {
 
 impl MeetingsTemplate {
     pub async fn new(meetings: Vec<meetings::Model>, ctx: DatabaseConnection) -> Self {
-        let meetings: Vec<MeetingTemplate> = stream::iter(meetings)
+        let meetings: Vec<MeetingListItem> = stream::iter(meetings)
             .then(|meeting| async {
                 let book = meeting
                     .find_related(books::Entity)
@@ -49,7 +62,7 @@ impl MeetingsTemplate {
                     .await
                     .unwrap()
                     .unwrap();
-                MeetingTemplate {
+                MeetingListItem {
                     book,
                     user,
                     meeting,

@@ -1,0 +1,8 @@
+<form hx-post="/meetings/{{ meeting.id }}" {% if !editor %}hx-disable{% endif %}>
+    <div class="form-group">
+        <label for="location">Location</label>
+        <input {% if !editor %}disabled{% endif %} type="text" class="form-control" id="location" name="location"
+            value="{{ meeting.location }}" hx-post="/meetings/{{ meeting.id }}" hx-trigger="keyup changed delay:500ms"
+            _="on keyup put my.value into .meeting-{{ meeting.id }}-location">
+    </div>
+</form>
