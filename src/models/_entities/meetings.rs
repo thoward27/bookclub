@@ -13,6 +13,8 @@ pub struct Model {
     pub book_id: i32,
     pub date: DateTimeWithTimeZone,
     pub location: String,
+    pub next_meeting_template: Json,
+    pub next_meeting_id: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -25,6 +27,14 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Books,
+    #[sea_orm(
+        belongs_to = "Entity",
+        from = "Column::NextMeetingId",
+        to = "Column::Id",
+        on_update = "NoAction",
+        on_delete = "SetNull"
+    )]
+    SelfRef,
 }
 
 impl Related<super::books::Entity> for Entity {

@@ -9,6 +9,7 @@ mod m20240721_010532_picks;
 mod m20240726_125323_circuits;
 mod m20240726_130832_books;
 mod m20240726_131830_meetings;
+mod m20240802_110243_add_next_meeting;
 pub struct Migrator;
 
 #[async_trait::async_trait]
@@ -21,6 +22,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20240726_125323_circuits::Migration),
             Box::new(m20240726_130832_books::Migration),
             Box::new(m20240726_131830_meetings::Migration),
+            Box::new(m20240802_110243_add_next_meeting::Migration),
         ]
     }
 }
