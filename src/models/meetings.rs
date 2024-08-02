@@ -15,4 +15,13 @@ impl super::_entities::meetings::ActiveModel {
         self.location = ActiveValue::set(location);
         Ok(self.update(db).await?)
     }
+
+    pub async fn set_date(
+        mut self,
+        date: chrono::DateTime<chrono::FixedOffset>,
+        db: &DatabaseConnection,
+    ) -> ModelResult<Model> {
+        self.date = ActiveValue::set(date);
+        Ok(self.update(db).await?)
+    }
 }
