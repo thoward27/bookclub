@@ -2,21 +2,49 @@
 
 {% block body %}
 <div class="list-group">
-    {% for (date, meeting_group) in meetings %}
+    {% for (meeting, book) in meetings %}
     <div class="list-group-item">
-        <div class="row">
-            <div class="col-sm-3">
-                <h5>{{ date.format("%d %b, %a") }}</h5>
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <div class="row align-items-end">
+                    <div class="col-auto pe-0">
+                        <span class="fs-4 font-monospace">{{ meeting.date.format("%d") }}</span>
+                    </div>
+                    <div class="col d-none d-sm-block" style="width: 100px">
+                        <span class="fs-6 fw-light text-secondary">{{ meeting.date.format("%b, %a") }}</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm">
+            <div class="col">
                 <li class="list-group list-group-flush">
-                    {% for meeting in meeting_group %}
-                    {{ meeting }}
-                    {% endfor %}
+                    <a href="/meetings/{{ meeting.id }}" class="list-group-item list-group-item-action">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <span id="time-{{ meeting.id }}" class="fs-5"
+                                    _="init call toLocaleTime('{{ meeting.date.to_rfc3339() }}') put it into my.innerHTML">
+                                </span>
+                            </div>
+                            <div class="col col-lg-4">
+                                <span>{{ book.title }}</span>
+                            </div>
+                            <div class="col d-none d-sm-block">
+                                <span>{{ meeting.location }}</span>
+                            </div>
+                        </div>
+                    </a>
                 </li>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toLocaleTime(dateString) {
+        let date = new Date(dateString)
+        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+</script>
 {% endblock %}
