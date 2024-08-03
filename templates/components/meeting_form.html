@@ -1,4 +1,5 @@
-<form id="meeting-form" hx-ext="debug">
+<form id="meeting-form"
+      hx-ext="debug">
     <div class="form-group">
         <label for="location">Location</label>
         <input {% if !editable %}disabled{% endif %}
@@ -65,7 +66,7 @@
                                name="bench_user_id"
                                value="{{ user.id }}" />
                         {{ user.name }}
-                    </li> 
+                    </li>
                     {% endfor %}
             </div>
         </div>
@@ -73,3 +74,13 @@
     <div class="text-success"
          _="on htmx:afterSwap from #meeting-form put 'saved' into me then wait 1s then put '' into me"></div>
 </form>
+<br>
+<button type="button"
+        class="btn btn-success"
+        hx-post="/meetings/{{ meeting.id }}/next">
+    Create Next Meeting
+</button>
+<a href="/books/{{ book.id }}"
+   class="btn btn-primary">
+    Edit Book
+</a>
