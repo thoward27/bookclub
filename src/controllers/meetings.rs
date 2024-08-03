@@ -10,16 +10,17 @@ use sea_orm::QueryOrder;
 use serde::{Deserialize, Serialize};
 
 use crate::models::meetings::MeetingUpdateParams;
+use crate::views::meetings::MeetingFormTemplate;
 use crate::{
     common::middlewares::auth::Auth,
     models::_entities::{books, meetings, users},
-    views::meetings::{MeetingDetail, MeetingsTemplate},
+    views::meetings::{MeetingTemplate, MeetingsTemplate},
 };
 
 use axum_extra::extract::Form;
 
 #[debug_handler]
-pub async fn get_meetings(State(ctx): State<AppContext>) -> Result<Response> {
+pub async fn get_many(State(ctx): State<AppContext>) -> Result<Response> {
     let meetings: Vec<(meetings::Model, books::Model)> = meetings::Entity::find()
         .order_by_desc(meetings::Column::Date)
         .find_also_related(books::Entity)
@@ -30,6 +31,15 @@ pub async fn get_meetings(State(ctx): State<AppContext>) -> Result<Response> {
         .map(|(meeting, book)| (meeting, book.unwrap()))
         .collect();
     Ok(MeetingsTemplate { meetings }.into_response())
+}
+
+#[debug_handler]
+pub async fn get_one(
+    auth: Auth<users::Model>,
+    Path(id): Path<i32>,
+    State(ctx): State<AppContext>,
+) -> Result<impl IntoResponse> {
+    Ok(MeetingTemplate::new(id, auth.user, &ctx.db).await)
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -51,12 +61,12 @@ impl MeetingFormParams {
 }
 
 #[debug_handler]
-pub async fn update(
+pub async fn update_one(
     auth: Auth<users::Model>,
     Path(id): Path<i32>,
     State(ctx): State<AppContext>,
     Form(params): Form<MeetingFormParams>,
-) -> Result<Response> {
+) -> Result<impl IntoResponse> {
     let (meeting, book) = meetings::Entity::find()
         .find_also_related(books::Entity)
         .filter(meetings::Column::Id.eq(id))
@@ -85,34 +95,13 @@ pub async fn update(
             &ctx.db,
         )
         .await?;
-    Ok(MeetingDetail::new(meeting, book, auth.user, &ctx.db)
-        .await
-        .into_response())
-}
-
-#[debug_handler]
-pub async fn get_one(
-    auth: Auth<users::Model>,
-    Path(id): Path<i32>,
-    State(ctx): State<AppContext>,
-) -> Result<Response> {
-    let (meeting, book) = meetings::Entity::find()
-        .find_also_related(books::Entity)
-        .filter(meetings::Column::Id.eq(id))
-        .one(&ctx.db)
-        .await
-        .unwrap()
-        .unwrap();
-    let book = book.unwrap();
-    Ok(MeetingDetail::new(meeting, book, auth.user, &ctx.db)
-        .await
-        .into_response())
+    Ok(MeetingFormTemplate::new(meeting, book, auth.user, &ctx.db).await)
 }
 
 pub fn routes() -> Routes {
     Routes::new()
         .prefix("meetings")
-        .add("/", get(get_meetings))
+        .add("/", get(get_many))
         .add("/:id", get(get_one))
-        .add("/:id", post(update))
+        .add("/:id", post(update_one))
 }
