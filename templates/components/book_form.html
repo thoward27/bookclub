@@ -1,0 +1,29 @@
+<form id="book-form"
+      class="form">
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text"
+               {% if !editable %}disabled{% endif %}
+               class="form-control"
+               id="title"
+               name="title"
+               value="{{ book.title }}"
+               hx-post="/books/{{ book.id }}"
+               hx-swap="none"
+               hx-trigger="keyup changed delay:1s"
+               required>
+    </div>
+    <div class="form-group">
+        <label for="author">Author</label>
+        <input type="text"
+               {% if !editable %}disabled{% endif %}
+               class="form-control"
+               id="author"
+               name="author"
+               value="{{ book.author }}"
+               hx-post="/books/{{ book.id }}"
+               hx-swap="none"
+               hx-trigger="keyup changed delay:1s"
+               required>
+    </div>
+</form>
