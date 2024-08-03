@@ -93,10 +93,29 @@ pub async fn update_one(
     Ok(MeetingFormTemplate::new(meeting, book, auth.user, &ctx.db).await)
 }
 
+#[debug_handler]
+pub async fn create_next(
+    auth: Auth<users::Model>,
+    Path(id): Path<i32>,
+    State(ctx): State<AppContext>,
+) -> Result<impl IntoResponse> {
+    let (current_meeting, current_book) =
+        meetings::Model::get_with_book(&ctx.db, id).await.unwrap();
+    meetings::Model::create_next(current_meeting.clone(), current_book.clone(), &ctx.db).await?;
+    let current_meeting = meetings::Entity::find()
+        .filter(meetings::Column::Id.eq(id))
+        .one(&ctx.db)
+        .await
+        .unwrap()
+        .unwrap();
+    Ok(MeetingFormTemplate::new(current_meeting, current_book, auth.user, &ctx.db).await)
+}
+
 pub fn routes() -> Routes {
     Routes::new()
         .prefix("meetings")
         .add("/", get(get_many))
         .add("/:id", get(get_one))
         .add("/:id", post(update_one))
+        .add("/:id/next", post(create_next))
 }

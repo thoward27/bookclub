@@ -45,6 +45,21 @@ impl MeetingTemplate {
             form,
         }
     }
+
+    pub async fn from_models(
+        meeting: meetings::Model,
+        book: books::Model,
+        user: users::Model,
+        db: &DatabaseConnection,
+    ) -> Self {
+        let form = MeetingFormTemplate::new(meeting.clone(), book.clone(), user.clone(), db).await;
+        Self {
+            meeting,
+            book,
+            user,
+            form,
+        }
+    }
 }
 
 #[derive(Template, Debug, Clone)]

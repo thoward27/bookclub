@@ -5,6 +5,37 @@ use super::_entities::{
 use loco_rs::prelude::*;
 
 impl super::_entities::books::Model {
+    /// Return a placeholder book for a user in a circuit or create it.
+    pub async fn get_or_create_placeholder(
+        circuit_id: i32,
+        user_id: i32,
+        db: &DatabaseConnection,
+    ) -> ModelResult<books::Model> {
+        if let Some(book) = books::Entity::find()
+            .filter(books::Column::CircuitId.eq(circuit_id))
+            .filter(books::Column::UserId.eq(user_id))
+            .filter(books::Column::Title.eq("TBD"))
+            .one(db)
+            .await?
+        {
+            Ok(book)
+        } else {
+            let book = books::ActiveModel {
+                title: ActiveValue::set("TBD".to_string()),
+                author: ActiveValue::set("TBD".to_string()),
+                circuit_id: ActiveValue::set(circuit_id),
+                user_id: ActiveValue::set(user_id),
+                calibre_link: ActiveValue::set("".to_string()),
+                isbn10: ActiveValue::set("TBD".to_string()),
+                isbn13: ActiveValue::set("TBD".to_string()),
+                ..Default::default()
+            }
+            .insert(db)
+            .await?;
+            Ok(book)
+        }
+    }
+
     pub fn is_editable(
         &self,
         user: &super::_entities::users::Model,

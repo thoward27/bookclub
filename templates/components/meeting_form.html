@@ -1,5 +1,5 @@
 <form id="meeting-form"
-      hx-ext="debug">
+      class="form">
     <div class="form-group">
         <label for="location">Location</label>
         <input {% if !editable %}disabled{% endif %}
@@ -33,15 +33,14 @@
                _="init call getLocalTimezone() put it into my.value">
     </div>
     <div class="form-group">
-        <div class="row">
+        <div class="row"
+             hx-trigger="sorted"
+             hx-post="/meetings/{{ meeting.id }}"
+             hx-swap="none">
             <div class="col">
                 <label for="order">Current Order</label>
                 <ul class="sortable list-group"
-                    id="order"
-                    hx-trigger="sorted"
-                    hx-post="/meetings/{{ meeting.id }}"
-                    hx-swap="outerHTML"
-                    hx-target="#meeting-form">
+                    id="order">
                     {% for user in next_meeting_template.order %}
                     <li class="list-group-item {% if loop.first %}no-sort{% endif %}">
                         <input type="hidden"
@@ -55,11 +54,7 @@
             <div class="col">
                 <label for="bench">Bench</label>
                 <ul class="sortable list-group"
-                    id="bench"
-                    hx-trigger="sorted"
-                    hx-post="/meetings/{{ meeting.id }}"
-                    hx-swap="outerHTML"
-                    hx-target="#meeting-form">
+                    id="bench">
                     {% for user in next_meeting_template.bench %}
                     <li class="list-group-item">
                         <input type="hidden"
@@ -71,16 +66,24 @@
             </div>
         </div>
     </div>
-    <div class="text-success"
-         _="on htmx:afterSwap from #meeting-form put 'saved' into me then wait 1s then put '' into me"></div>
+    <br>
+    {% if meeting.next_meeting_id.is_none() %}
+    <button type="button"
+            class="btn btn-success"
+            hx-post="/meetings/{{ meeting.id }}/next"
+            hx-swap="outerHTML"
+            hx-target="#meeting-form"
+            hx-disable-elt="this">
+        Create Next Meeting
+    </button>
+    {% else %}
+    <a href="/meetings/{{ meeting.next_meeting_id.unwrap() }}"
+       class="btn btn-primary">
+        View Next Meeting
+    </a>
+    {% endif %}
+    <a href="/books/{{ book.id }}"
+       class="btn btn-primary {% if !editable %}disabled{% endif %}">
+        Edit Book
+    </a>
 </form>
-<br>
-<button type="button"
-        class="btn btn-success"
-        hx-post="/meetings/{{ meeting.id }}/next">
-    Create Next Meeting
-</button>
-<a href="/books/{{ book.id }}"
-   class="btn btn-primary">
-    Edit Book
-</a>
