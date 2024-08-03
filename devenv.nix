@@ -29,6 +29,8 @@ in
     '';
   };
 
+  processes.server.exec = "CARGO_TARGET_DIR=target/server backend-watch";
+
   services = {
     postgres = {
       enable = true;
@@ -45,6 +47,8 @@ in
   };
 
   env.DATABASE_URL = "postgres://loco:loco@127.0.0.1/bookclub_development";
+  # This helps me in VSCode avoid having DevEnv Pre-Commit smash the cash from rust-analyzer.
+  env.CARGO_TARGET_DIR = "target/devenv";
 
   languages = {
     nix.enable = true;

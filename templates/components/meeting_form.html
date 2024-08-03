@@ -1,0 +1,52 @@
+<form id="meeting-form">
+    <div class="form-group">
+        <label for="location">Location</label>
+        <input {% if !editable %}disabled{% endif %}
+               type="text"
+               class="form-control"
+               id="location"
+               name="location"
+               value="{{ meeting.location }}"
+               _="on htmx:beforeSend toggle .border-warning until htmx:afterSwap"
+               hx-ext="debug"
+               hx-post="/meetings/{{ meeting.id }}"
+               hx-swap="none"
+               hx-trigger="keyup changed delay:1s">
+    </div>
+    <div class="form-group">
+        <label for="date">Date</label>
+        {% set date = meeting.date.format("%Y-%m-%dT%H:%M") %}
+        <input {% if !editable %}disabled{% endif %}
+               type="datetime-local"
+               class="form-control"
+               id="date"
+               name="date"
+               value="{{ date }}"
+               _="init call toLocaleTime('{{ meeting.date.to_rfc3339() }}') put it into my.value"
+               hx-post="/meetings/{{ meeting.id }}"
+               hx-disabled-elt="this"
+               hx-trigger="change changed delay:500ms">
+        <input type="hidden"
+               name="timezone"
+               value="UTC"
+               _="init call getLocalTimezone() put it into my.value">
+    </div>
+    <div class="form-group">
+        <label for="sortable">Current Order</label>
+        <ul class="sortable list-group"
+            hx-trigger="end"
+            hx-post="/meetings/{{ meeting.id }}"
+            hx-swap="outerHTML"
+            hx-target="#meeting-form">
+            {% for user in next_meeting_template.order %}
+            <li class="list-group-item {% if loop.first %}no-sort{% endif %}">
+                <input type="hidden"
+                       name="user_id"
+                       value="{{ user.id }}" />
+                {{ user.name }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="text-success" _="on htmx:afterSwap from #meeting-form put 'saved' into me then wait 1s then put '' into me"></div>
+</form>

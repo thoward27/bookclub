@@ -1,5 +1,5 @@
 use super::_entities::meetings::{ActiveModel, Model};
-use super::_entities::users;
+use super::_entities::{books, meetings, users};
 use futures::{stream, StreamExt};
 use loco_rs::prelude::*;
 use sea_orm::ActiveValue;
@@ -12,17 +12,23 @@ pub struct MeetingUpdateParams {
     pub order: Vec<i32>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct NextMeetingTemplate {
-    pub order: Vec<users::Model>,
-}
-
 #[derive(Debug, Deserialize, Serialize)]
 struct NextMeetingTemplateRaw {
     order: Vec<i32>,
 }
 
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct NextMeetingTemplate {
+    pub order: Vec<users::Model>,
+}
+
 impl super::_entities::meetings::Model {
+    /// Whether the next meeting has *not* been set, the book belongs to the user, and the meeting is in the future.
+    pub fn is_editable(&self, user: &users::Model, book: &books::Model) -> bool {
+        self.next_meeting_id.is_none() && book.user_id == user.id && self.date > chrono::Utc::now()
+    }
+
+    /// Get the next meeting template.
     pub async fn get_next_meeting_template(
         &self,
         db: &DatabaseConnection,
@@ -42,7 +48,19 @@ impl super::_entities::meetings::Model {
                 .collect::<Vec<users::Model>>()
                 .await,
         })
-        // Ok(serde_json::from_value(self.next_meeting_template.clone()).unwrap())
+    }
+
+    /// Get the meeting with the book.
+    pub async fn get_with_book(db: &DatabaseConnection, id: i32) -> Result<(Model, books::Model)> {
+        let (meeting, book) = meetings::Entity::find()
+            .find_also_related(books::Entity)
+            .filter(meetings::Column::Id.eq(id))
+            .one(db)
+            .await
+            .unwrap()
+            .unwrap();
+        let book = book.unwrap();
+        Ok((meeting, book))
     }
 }
 
@@ -66,23 +84,6 @@ impl super::_entities::meetings::ActiveModel {
                 .unwrap(),
             );
         }
-        Ok(self.update(db).await?)
-    }
-    pub async fn set_location(
-        mut self,
-        location: String,
-        db: &DatabaseConnection,
-    ) -> ModelResult<Model> {
-        self.location = ActiveValue::set(location);
-        Ok(self.update(db).await?)
-    }
-
-    pub async fn set_date(
-        mut self,
-        date: chrono::DateTime<chrono::FixedOffset>,
-        db: &DatabaseConnection,
-    ) -> ModelResult<Model> {
-        self.date = ActiveValue::set(date);
         Ok(self.update(db).await?)
     }
 }
