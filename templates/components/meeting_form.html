@@ -1,4 +1,4 @@
-<form id="meeting-form">
+<form id="meeting-form" hx-ext="debug">
     <div class="form-group">
         <label for="location">Location</label>
         <input {% if !editable %}disabled{% endif %}
@@ -32,21 +32,44 @@
                _="init call getLocalTimezone() put it into my.value">
     </div>
     <div class="form-group">
-        <label for="sortable">Current Order</label>
-        <ul class="sortable list-group"
-            hx-trigger="end"
-            hx-post="/meetings/{{ meeting.id }}"
-            hx-swap="outerHTML"
-            hx-target="#meeting-form">
-            {% for user in next_meeting_template.order %}
-            <li class="list-group-item {% if loop.first %}no-sort{% endif %}">
-                <input type="hidden"
-                       name="user_id"
-                       value="{{ user.id }}" />
-                {{ user.name }}
-            </li>
-            {% endfor %}
-        </ul>
+        <div class="row">
+            <div class="col">
+                <label for="order">Current Order</label>
+                <ul class="sortable list-group"
+                    id="order"
+                    hx-trigger="sorted"
+                    hx-post="/meetings/{{ meeting.id }}"
+                    hx-swap="outerHTML"
+                    hx-target="#meeting-form">
+                    {% for user in next_meeting_template.order %}
+                    <li class="list-group-item {% if loop.first %}no-sort{% endif %}">
+                        <input type="hidden"
+                               name="user_id"
+                               value="{{ user.id }}" />
+                        {{ user.name }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col">
+                <label for="bench">Bench</label>
+                <ul class="sortable list-group"
+                    id="bench"
+                    hx-trigger="sorted"
+                    hx-post="/meetings/{{ meeting.id }}"
+                    hx-swap="outerHTML"
+                    hx-target="#meeting-form">
+                    {% for user in next_meeting_template.bench %}
+                    <li class="list-group-item">
+                        <input type="hidden"
+                               name="bench_user_id"
+                               value="{{ user.id }}" />
+                        {{ user.name }}
+                    </li> 
+                    {% endfor %}
+            </div>
+        </div>
     </div>
-    <div class="text-success" _="on htmx:afterSwap from #meeting-form put 'saved' into me then wait 1s then put '' into me"></div>
+    <div class="text-success"
+         _="on htmx:afterSwap from #meeting-form put 'saved' into me then wait 1s then put '' into me"></div>
 </form>

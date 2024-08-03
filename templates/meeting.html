@@ -22,6 +22,7 @@
             var sortable = sortables[i];
             var sortableInstance = new Sortable(sortable, {
                 animation: 150,
+                group: 'shared',
                 ghostClass: 'blue-background-class',
 
                 // Make the `.htmx-indicator` unsortable
@@ -33,6 +34,13 @@
                 // Disable sorting on the `end` event
                 onEnd: function (evt) {
                     this.option("disabled", true);
+                    var inputElement = evt.item.querySelector('input');
+                    if (evt.to.id === 'order') {
+                        inputElement.name = `user_id`;
+                    } else {
+                        inputElement.name = `bench_user_id`;
+                    }
+                    evt.item.dispatchEvent(new CustomEvent('sorted', { bubbles: true }));
                 }
             });
 
