@@ -1,3 +1,8 @@
+<style>
+    .sortable.disabled .list-group-item {
+        background-color: var(--bs-secondary-bg);
+    }
+</style>
 <form id="meeting-form"
       class="form">
     <div class="form-group">
@@ -39,13 +44,19 @@
              hx-swap="none">
             <div class="col">
                 <label for="order">Current Order</label>
-                <ul class="sortable list-group"
+                <ul class="sortable list-group {% if !editable %}disabled{% endif %}"
                     id="order">
                     {% for user in next_meeting_template.order %}
                     <li class="list-group-item {% if loop.first %}no-sort{% endif %}">
                         <input type="hidden"
                                name="user_id"
                                value="{{ user.id }}" />
+                        {% if !loop.first && editable %}
+                        <span class="material-symbols-outlined align-bottom handle"
+                              style="cursor: move"></span>
+                            drag_indicator
+                        </span>
+                        {% endif %}
                         {{ user.name }}
                     </li>
                     {% endfor %}
@@ -53,7 +64,7 @@
             </div>
             <div class="col">
                 <label for="bench">Bench</label>
-                <ul class="sortable list-group"
+                <ul class="sortable list-group {% if !editable %}disabled{% endif %}"
                     id="bench">
                     {% for user in next_meeting_template.bench %}
                     <li class="list-group-item">
@@ -69,7 +80,7 @@
     <br>
     {% if meeting.next_meeting_id.is_none() %}
     <button type="button"
-            class="btn btn-success"
+            class="btn btn-success {% if !editable %}disabled{% endif %}"
             hx-post="/meetings/{{ meeting.id }}/next"
             hx-swap="outerHTML"
             hx-target="#meeting-form"
