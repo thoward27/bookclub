@@ -20,6 +20,8 @@ struct NextMeetingTemplateRaw {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct NextMeetingTemplate {
     pub order: Vec<users::Model>,
+    // Users who are not in Order.
+    pub bench: Vec<users::Model>,
 }
 
 impl super::_entities::meetings::Model {
@@ -36,10 +38,10 @@ impl super::_entities::meetings::Model {
         let template: NextMeetingTemplateRaw =
             serde_json::from_value(self.next_meeting_template.clone()).unwrap();
         Ok(NextMeetingTemplate {
-            order: stream::iter(template.order)
+            order: stream::iter(&template.order)
                 .then(|user_id| async move {
                     users::Entity::find()
-                        .filter(users::Column::Id.eq(user_id))
+                        .filter(users::Column::Id.eq(*user_id))
                         .one(db)
                         .await
                         .unwrap()
@@ -47,6 +49,11 @@ impl super::_entities::meetings::Model {
                 })
                 .collect::<Vec<users::Model>>()
                 .await,
+            bench: users::Entity::find()
+                .filter(users::Column::Id.is_not_in(template.order))
+                .all(db)
+                .await
+                .unwrap(),
         })
     }
 
@@ -76,14 +83,12 @@ impl super::_entities::meetings::ActiveModel {
     ) -> ModelResult<Model> {
         self.location = ActiveValue::set(params.location);
         self.date = ActiveValue::set(params.date);
-        if self.next_meeting_id.is_not_set() {
-            self.next_meeting_template = ActiveValue::set(
-                serde_json::to_value(NextMeetingTemplateRaw {
-                    order: params.order,
-                })
-                .unwrap(),
-            );
-        }
+        self.next_meeting_template = ActiveValue::set(
+            serde_json::to_value(NextMeetingTemplateRaw {
+                order: params.order,
+            })
+            .unwrap(),
+        );
         Ok(self.update(db).await?)
     }
 }

@@ -49,6 +49,8 @@ pub struct MeetingFormParams {
     pub timezone: String,
     #[serde(rename = "user_id")]
     pub user_ids: Vec<String>,
+    #[serde(rename = "bench_user_id", default = "Vec::new")]
+    pub bench_user_ids: Vec<String>,
 }
 
 impl MeetingFormParams {
@@ -67,17 +69,10 @@ pub async fn update_one(
     State(ctx): State<AppContext>,
     Form(params): Form<MeetingFormParams>,
 ) -> Result<impl IntoResponse> {
-    let (meeting, book) = meetings::Entity::find()
-        .find_also_related(books::Entity)
-        .filter(meetings::Column::Id.eq(id))
-        .one(&ctx.db)
-        .await
-        .unwrap()
-        .unwrap();
-    let book = book.unwrap();
-    if auth.user.id != book.user_id {
+    let (meeting, book) = meetings::Model::get_with_book(&ctx.db, id).await.unwrap();
+    if !meeting.is_editable(&auth.user, &book) {
         return Err(Error::Unauthorized(
-            "You are not the owner of this book".to_string(),
+            "You cannot edit this meeting".to_string(),
         ));
     }
     let meeting = meeting
