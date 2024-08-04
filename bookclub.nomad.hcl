@@ -18,6 +18,63 @@ job "bookclub" {
     healthy_deadline = "5m"
   }
 
+  group "cloudflare" {
+    count = 1
+
+    task "cloudflare" {
+      driver = "docker"
+      config {
+        image        = "cloudflare/cloudflared:latest"
+        force_pull   = true
+        network_mode = "host"
+        command      = "tunnel"
+        args         = ["--config /secrets/tunnel.yaml", "run"]
+      }
+
+      resources {
+        cpu    = 100
+        memory = 64
+      }
+
+      vault {
+        policies = ["bookclub-prod"]
+      }
+
+      template {
+        data        = <<EOH
+{{- with secret "kv/inkwellcollective/cloudflare" }}
+{
+  "AccountTag":"{{ .Data.AccountTag }}",
+  "TunnelSecret":"{{ .Data.TunnelSecret }}",
+  "TunnelID":"{{ .Data.TunnelID }}"
+}
+{{- end }}
+          EOH
+        destination = "secrets/credentials.json"
+        env         = false
+      }
+
+      # TODO: HA Proxy to scale up the number of servers running. Cloudflared can only route to 1 thing.
+      template {
+        data        = <<EOH
+{{- with secret "kv/inkwellcollective/cloudflare" }}
+tunnel: {{ .Data.TunnelID }} 
+{{- end }}
+credentials-file: /secrets/credentials.json
+
+ingress:
+  - hostname: www.inkwellcollective.org
+    {{- range service "inkwellcollective-prod" }}
+    service: {{ .Address }}:{{ .Port }}
+    {{- end }}
+
+        EOH
+        destination = "secrets/tunnel.yaml"
+        env         = false
+      }
+    }
+  }
+
   group "server" {
     count = 1
 
