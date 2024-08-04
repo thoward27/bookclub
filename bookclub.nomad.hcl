@@ -28,7 +28,7 @@ job "bookclub" {
         force_pull   = true
         network_mode = "host"
         command      = "tunnel"
-        args         = ["--config /secrets/tunnel.yaml", "run"]
+        args         = ["--config", "/secrets/tunnel.yaml", "run"]
       }
 
       resources {
@@ -64,10 +64,10 @@ credentials-file: /secrets/credentials.json
 
 ingress:
   - hostname: www.inkwellcollective.org
-    {{- range service "inkwellcollective-prod" }}
-    service: {{ .Address }}:{{ .Port }}
-    {{- end }}
-
+    service: https://localhost
+    originRequest:
+      noTLSVerify: true
+  - service: http_status:404
         EOH
         destination = "secrets/tunnel.yaml"
         env         = false
@@ -83,7 +83,7 @@ ingress:
     }
 
     service {
-      name = "bookclub-prod"
+      name = "inkwellcollective-prod"
       port = "http"
       check {
         type     = "http"
@@ -98,7 +98,7 @@ ingress:
       }
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.bookclub.rule=Host(`bookclub.tomhoward.codes`)",
+        "traefik.http.routers.bookclub.rule=Host(`www.inkwellcollective.org`)",
         "traefik.http.routers.bookclub.entrypoints=websecure",
         "traefik.http.routers.bookclub.tls.certresolver=letsencrypt",
         "traefik.http.routers.bookclub.middlewares=authelia@docker",
