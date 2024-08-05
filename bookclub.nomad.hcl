@@ -1,3 +1,4 @@
+// TODO: Migrate to Nomad Services from Consul Services so I can use the function to just get one.
 job "bookclub" {
   datacenters = ["*"]
   type        = "service"
@@ -86,6 +87,12 @@ ingress:
   group "traefik" {
     count = 1
 
+    ephemeral_disk {
+      migrate = true
+      size    = 300
+      sticky  = true
+    }
+
     network {
       port "https" {}
       port "dashboard" {}
@@ -127,7 +134,7 @@ ingress:
         image = "traefik:v2.9"
         mount {
           type   = "bind"
-          source = "/mnt/pool-internal-hdd/projects/inkwellcollective/traefik/letsencrypt"
+          source = "alloc/data"
           target = "/letsencrypt"
         }
         args = [
