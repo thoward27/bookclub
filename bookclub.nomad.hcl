@@ -158,6 +158,10 @@ ingress:
         memory = 64
       }
 
+      vault {
+        policies = ["bookclub-prod"]
+      }
+
       template {
         data        = <<EOH
         {{ with secret "kv/cloudflare" }}
