@@ -157,6 +157,18 @@ ingress:
         cpu    = 100
         memory = 64
       }
+
+      template {
+        data        = <<EOH
+        {{ with secret "kv/cloudflare" }}
+        CF_API_EMAIL="{{ .Data.CF_API_EMAIL }}"
+        CF_DNS_API_TOKEN="{{ .Data.CF_DNS_API_TOKEN }}"
+        CF_ZONE_API_TOKEN="{{ .Data.CF_ZONE_API_TOKEN }}"
+        {{ end }}
+        EOH
+        destination = "secrets/cloudflare.env"
+        env         = true
+      }
     }
   }
 
