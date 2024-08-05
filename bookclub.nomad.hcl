@@ -122,6 +122,7 @@ ingress:
     }
 
     task "traefik" {
+      driver = "docker"
       config {
         image = "traefik:v2.9"
         mount {
@@ -142,10 +143,10 @@ ingress:
           "--providers.consulcatalog.endpoint=http://127.0.0.1:8500",
           "--providers.consulcatalog.prefix=inkwellcollectivetraefik",
 
-          "--certificatesresolvers.letsencrypt.acme.dnsChallenge=true"
-          "--certificatesresolvers.letsencrypt.acme.dnsChallenge.provider=cloudflare"
-          "--certificatesresolvers.letsencrypt.acme.email=info@tomhoward.codes"
-          "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+          "--certificatesresolvers.letsencrypt.acme.dnsChallenge=true",
+          "--certificatesresolvers.letsencrypt.acme.dnsChallenge.provider=cloudflare",
+          "--certificatesresolvers.letsencrypt.acme.email=info@tomhoward.codes",
+          "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json",
         ]
       }
 
