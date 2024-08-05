@@ -142,7 +142,7 @@ job "bookclub" {
         network_mode = "host"
         mount {
           type   = "bind"
-          source = "/secrets"
+          source = "secrets"
           target = "/config"
         }
       }
@@ -164,8 +164,8 @@ jwt_secret: {{ .Data.jwt_secret }}
 theme: dark
 default_2fa_method: ""
 server:
-  host: {{ $NOMAD_IP_http }}
-  port: {{ $NOMAD_PORT_http }}
+  host: ${NOMAD_IP_http}
+  port: ${NOMAD_PORT_http}
   enable_pprof: false
   enable_expvars: false
   disable_healthcheck: false
@@ -284,7 +284,7 @@ notifier:
     sender: "Authelia <auth.inkwellcollective.org"
     disable_require_tls: false
 EOH
-        destination = "secrets/config.yaml"
+        destination = "secrets/configuration.yml"
       }
     }
   }
