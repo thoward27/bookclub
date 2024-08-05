@@ -132,11 +132,6 @@ ingress:
       driver = "docker"
       config {
         image = "traefik:v2.9"
-        mount {
-          type   = "bind"
-          source = "alloc/data"
-          target = "/letsencrypt"
-        }
         args = [
           "--api.insecure",
           "--log.level=DEBUG",
@@ -153,7 +148,7 @@ ingress:
           "--certificatesresolvers.letsencrypt.acme.dnsChallenge=true",
           "--certificatesresolvers.letsencrypt.acme.dnsChallenge.provider=cloudflare",
           "--certificatesresolvers.letsencrypt.acme.email=info@tomhoward.codes",
-          "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json",
+          "--certificatesresolvers.letsencrypt.acme.storage=/alloc/data/letsencrypt/acme.json",
         ]
       }
 
