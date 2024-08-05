@@ -158,14 +158,14 @@ job "bookclub" {
 
       template {
         data        = <<EOH
-{{ with secret "kv/inkwellcollective/authelia" }}
+{{- with secret "kv/inkwellcollective/authelia" }}
 jwt_secret: {{ .Data.jwt_secret }}
-{{ end }}
+{{- end }}
 theme: dark
 default_2fa_method: ""
 server:
-  host: ${NOMAD_IP_http}
-  port: ${NOMAD_PORT_http}
+  host: {{ env "NOMAD_IP_http" }}
+  port: {{ env "NOMAD_PORT_http" }}
   enable_pprof: false
   enable_expvars: false
   disable_healthcheck: false
@@ -188,7 +188,7 @@ webauthn:
   disable: false
   timeout: 60s
   display_name: Authelia
-  attenstation_conveyance_prefence: indirect
+  attestation_conveyance_preference: 'indirect'
   user_verification: preferred
 
 ntp:
@@ -206,7 +206,7 @@ authentication_backend:
   ldap:
     implementation: custom
     {{- range service "inkwellcollective-ldap" }}
-    url: "ldap://{{ .Address }}:{{ .Port }}"
+    address: "ldap://{{ .Address }}:{{ .Port }}"
     {{- end }}
     start_tls: false
     base_dn: dc=inkwellcollective,dc=org
@@ -219,9 +219,9 @@ authentication_backend:
     mail_attribute: mail
     display_name_attribute: displayName
     user: uid=admin,ou=people,dc=inkwellcollective,dc=org
-    {{- with secret "kv/inkwellcollective/lldap" -}}
+    {{- with secret "kv/inkwellcollective/lldap" }}
     password: "{{ .Data.ldap_user_pass }}"
-    {{- end -}}
+    {{- end }}
 password_policy:
   standard:
     enabled: false
@@ -247,10 +247,10 @@ session:
   remember_me_duration: 14d
 
   redis:
-    {{ range service "inkwellcollective-redis" }}
+    {{- range service  "inkwellcollective-redis|any" }}
     host: {{ .Address }}
     port: {{ .Port }}
-    {{ end }}
+    {{- end }}
     database_index: 1
   
 regulation:
@@ -273,15 +273,15 @@ storage:
     {{- end }}
 
 notifier:
-  disable_startup_check: false
+  disable_startup_check: true
   smtp:
-    host: smtp.postmark.com
+    host: smtp.postmark.app
     port: 25
     {{- with secret "kv/inkwellcollective/postmark" }}
     username: {{ .Data.username }}
     password: {{ .Data.password }}
     {{- end }}
-    sender: "Authelia <auth.inkwellcollective.org"
+    sender: "Authelia <auth@inkwellcollective.org>"
     disable_require_tls: false
 EOH
         destination = "secrets/configuration.yml"
@@ -372,7 +372,7 @@ ingress:
         "traefik.http.routers.bookclub.rule=Host(`www.inkwellcollective.org`)",
         "traefik.http.routers.bookclub.entrypoints=websecure",
         "traefik.http.routers.bookclub.tls.certresolver=letsencrypt",
-        "traefik.http.routers.bookclub.middlewares=authelia@docker",
+        "traefik.http.routers.bookclub.middlewares=authelia-inkwellcollective@consulcatalog",
         "traefik.http.services.bookclub.loadbalancer.server.port=${NOMAD_PORT_http}"
       ]
     }
@@ -471,10 +471,7 @@ ingress:
 
     service {
       name     = "inkwellcollective-redis"
-      tags     = ["global", "cache"]
       port     = "db"
-      provider = "nomad"
-
       check {
         name     = "alive"
         type     = "tcp"
