@@ -136,8 +136,8 @@ ingress:
           "--api.insecure",
           "--log.level=DEBUG",
 
-          "--entrypoints.dashboard.address=:{{ env 'NOMAD_PORT_dashboard' }}",
-          "--entrypoints.websecure.address=:{{ env 'NOMAD_PORT_https' }}",
+          "--entrypoints.dashboard.address=:${NOMAD_PORT_dashboard}",
+          "--entrypoints.websecure.address=:${NOMAD_PORT_https}",
           "--entrypoints.websecure.forwardedHeaders.insecure=true",
           "--entrypoints.websecure.http.middlewares=inkwellcollective-authelia@consulcatalog",
 
