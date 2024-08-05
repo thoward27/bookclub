@@ -137,7 +137,7 @@ ingress:
           "--api.insecure",
           "--log.level=DEBUG",
 
-          "--entrypoints.dashboard.address=:${NOMAD_PORT_dashboard}",
+          "--entrypoints.traefik.address=:${NOMAD_PORT_dashboard}",
           "--entrypoints.websecure.address=:${NOMAD_PORT_https}",
           "--entrypoints.websecure.forwardedHeaders.insecure=true",
           "--entrypoints.websecure.http.middlewares=inkwellcollective-authelia@consulcatalog",
@@ -149,7 +149,7 @@ ingress:
           "--certificatesresolvers.letsencrypt.acme.dnsChallenge=true",
           "--certificatesresolvers.letsencrypt.acme.dnsChallenge.provider=cloudflare",
           "--certificatesresolvers.letsencrypt.acme.email=info@tomhoward.codes",
-          "--certificatesresolvers.letsencrypt.acme.storage=/alloc/data/letsencrypt/acme.json",
+          "--certificatesresolvers.letsencrypt.acme.storage=/alloc/data/acme.json",
         ]
       }
 
