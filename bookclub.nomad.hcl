@@ -68,16 +68,16 @@ job "bookclub" {
       }
 
       env {
-        TZ = "America/New_York"
-        LLDAP_LDAP_HOST="0.0.0.0"
-        LLDAP_LDAP_PORT="${ NOMAD_PORT_ldap }"
-        LLDAP_HTTP_HOST="0.0.0.0"
-        LLDAP_HTTP_PORT="${ NOMAD_PORT_http }"
-        LLDAP_HTTP_URL="https://ldap.inkwellcollective.org"
-        LLDAP_LDAP_BASE_DN="dc=inkwellcollective,dc=org"
-        LLDAP_LDAP_USER_DN="admin"
-        LLDAP_LDAP_USER_EMAIL="info@tomhoward.codes"
-        LLDAP_SMTP_OPTIONS__ENABLE_PASSWORD_RESET="false"
+        TZ                                        = "America/New_York"
+        LLDAP_LDAP_HOST                           = "0.0.0.0"
+        LLDAP_LDAP_PORT                           = "${NOMAD_PORT_ldap}"
+        LLDAP_HTTP_HOST                           = "0.0.0.0"
+        LLDAP_HTTP_PORT                           = "${NOMAD_PORT_http}"
+        LLDAP_HTTP_URL                            = "https://ldap.inkwellcollective.org"
+        LLDAP_LDAP_BASE_DN                        = "dc=inkwellcollective,dc=org"
+        LLDAP_LDAP_USER_DN                        = "admin"
+        LLDAP_LDAP_USER_EMAIL                     = "info@tomhoward.codes"
+        LLDAP_SMTP_OPTIONS__ENABLE_PASSWORD_RESET = "false"
       }
 
       vault {
@@ -99,64 +99,65 @@ job "bookclub" {
         env         = true
       }
     }
+  }
 
-    group "authelia" {
-      count = 1
+  group "authelia" {
+    count = 1
 
-      network {
-        port "http" {}
+    network {
+      port "http" {}
+    }
+
+    service {
+      name = "inkwellcollective-authelia"
+      port = "http"
+      check {
+        type     = "http"
+        port     = "http"
+        path     = "/_ping"
+        timeout  = "1s"
+        interval = "10s"
+        check_restart {
+          limit = 5
+          grace = "30s"
+        }
+      }
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.authelia.rule=Host(`auth.inkwellcollective.org`)",
+        "traefik.http.routers.authelia.entrypoints=websecure",
+        "traefik.http.routers.authelia.tls.certresolver=letsencrypt",
+        # Middleware Registration.
+        "traefik.http.middlewares.authelia-inkwellcollective.forwardAuth.address=http://{{ $NOMAD_ADDR_http }}/api/verify?rd=https%3A%2F%2Fauth.inkwellcollective.org",
+        "traefik.http.middlewares.authelia-inkwellcollective.forwardAuth.trustForwardHeader=true",
+        "traefik.http.middlewares.authelia-inkwellcollective.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email",
+      ]
+    }
+
+    task "authelia" {
+      driver = "docker"
+      config {
+        image        = "authelia/authelia:4"
+        ports        = ["http"]
+        network_mode = "host"
+        mount {
+          type   = "bind"
+          source = "/secrets"
+          target = "/config"
+        }
       }
 
-      service {
-        name = "inkwellcollective-authelia"
-        port = "http"
-        check {
-          type     = "http"
-          port     = "http"
-          path     = "/_ping"
-          timeout  = "1s"
-          interval = "10s"
-          check_restart {
-            limit = 5
-            grace = "30s"
-          }
-        }
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.authelia.rule=Host(`auth.inkwellcollective.org`)",
-          "traefik.http.routers.authelia.entrypoints=websecure",
-          "traefik.http.routers.authelia.tls.certresolver=letsencrypt",
-          # Middleware Registration.
-          "traefik.http.middlewares.authelia-inkwellcollective.forwardAuth.address=http://{{ $NOMAD_ADDR_http }}/api/verify?rd=https%3A%2F%2Fauth.inkwellcollective.org",
-          "traefik.http.middlewares.authelia-inkwellcollective.forwardAuth.trustForwardHeader=true",
-          "traefik.http.middlewares.authelia-inkwellcollective.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email",
-        ]
+      resources {
+        cpu    = 100
+        memory = 64
       }
 
-      task "authelia" {
-        driver = "docker"
-        config {
-          image        = "authelia/authelia:4"
-          ports        = ["http"]
-          network_mode = "host"
-          mount {
-            type   = "bind"
-            source = "/secrets"
-            target = "/config"
-          }
-        }
+      vault {
+        policies = ["bookclub-prod"]
+      }
 
-        resources {
-          cpu    = 100
-          memory = 64
-        }
-
-        vault {
-          policies = ["bookclub-prod"]
-        }
-
-        template {
-          data        = <<EOH
+      template {
+        data        = <<EOH
 {{ with secret "kv/inkwellcollective/authelia" }}
 jwt_secret: {{ .Data.jwt_secret }}
 {{ end }}
@@ -283,35 +284,35 @@ notifier:
     sender: "Authelia <auth.inkwellcollective.org"
     disable_require_tls: false
 EOH
-          destination = "secrets/config.yaml"
-        }
+        destination = "secrets/config.yaml"
       }
     }
+  }
 
-    group "cloudflare" {
-      count = 1
+  group "cloudflare" {
+    count = 1
 
-      task "cloudflare" {
-        driver = "docker"
-        config {
-          image        = "cloudflare/cloudflared:latest"
-          force_pull   = true
-          network_mode = "host"
-          command      = "tunnel"
-          args         = ["--config", "/secrets/tunnel.yaml", "run"]
-        }
+    task "cloudflare" {
+      driver = "docker"
+      config {
+        image        = "cloudflare/cloudflared:latest"
+        force_pull   = true
+        network_mode = "host"
+        command      = "tunnel"
+        args         = ["--config", "/secrets/tunnel.yaml", "run"]
+      }
 
-        resources {
-          cpu    = 100
-          memory = 64
-        }
+      resources {
+        cpu    = 100
+        memory = 64
+      }
 
-        vault {
-          policies = ["bookclub-prod"]
-        }
+      vault {
+        policies = ["bookclub-prod"]
+      }
 
-        template {
-          data        = <<EOH
+      template {
+        data        = <<EOH
 {{- with secret "kv/inkwellcollective/cloudflare" }}
 {
   "AccountTag":"{{ .Data.AccountTag }}",
@@ -320,13 +321,13 @@ EOH
 }
 {{- end }}
           EOH
-          destination = "secrets/credentials.json"
-          env         = false
-        }
+        destination = "secrets/credentials.json"
+        env         = false
+      }
 
-        # TODO: HA Proxy to scale up the number of servers running. Cloudflared can only route to 1 thing.
-        template {
-          data        = <<EOH
+      # TODO: HA Proxy to scale up the number of servers running. Cloudflared can only route to 1 thing.
+      template {
+        data        = <<EOH
 {{- with secret "kv/inkwellcollective/cloudflare" }}
 tunnel: {{ .Data.TunnelID }} 
 {{- end }}
@@ -339,181 +340,181 @@ ingress:
       noTLSVerify: true
   - service: http_status:404
         EOH
-          destination = "secrets/tunnel.yaml"
-          env         = false
-        }
-      }
-    }
-
-    group "server" {
-      count = 1
-
-      network {
-        port "http" {}
-      }
-
-      service {
-        name = "inkwellcollective-server"
-        port = "http"
-        check {
-          type     = "http"
-          port     = "http"
-          path     = "/_ping"
-          timeout  = "1s"
-          interval = "10s"
-          check_restart {
-            limit = 5
-            grace = "30s"
-          }
-        }
-        tags = [
-          "traefik.enable=true",
-          "traefik.http.routers.bookclub.rule=Host(`www.inkwellcollective.org`)",
-          "traefik.http.routers.bookclub.entrypoints=websecure",
-          "traefik.http.routers.bookclub.tls.certresolver=letsencrypt",
-          "traefik.http.routers.bookclub.middlewares=authelia@docker",
-          "traefik.http.services.bookclub.loadbalancer.server.port=${NOMAD_PORT_http}"
-        ]
-      }
-
-      task "bookclub" {
-        driver = "docker"
-        config {
-          image        = "thoward27/bookclub:main"
-          force_pull   = true
-          network_mode = "host"
-          ports        = ["http"]
-          command      = "start"
-        }
-
-        resources {
-          cpu    = 100
-          memory = 64
-        }
-
-        vault {
-          policies = ["bookclub-prod"]
-        }
-
-        env {
-          PORT     = "${NOMAD_PORT_http}"
-          HOST     = "https://bookclub.tomhoward.codes"
-          LOCO_ENV = "production"
-        }
-
-        template {
-          data        = <<EOH
-          {{ with secret "database/creds/bookclub-prod" }}
-          DATABASE_URL="postgres://{{.Data.username}}:{{.Data.password}}@127.0.0.1:5432/bookclub_production"
-          {{ end }}
-
-          {{ range service "inkwellcollective-redis"}}
-          REDIS_URL="redis://{{.Address}}:{{.Port}}"
-          {{ end }}
-        EOH
-          destination = "secrets/service.env"
-          env         = true
-        }
-      }
-    }
-
-    group "worker" {
-      count = 1
-
-      task "worker" {
-        driver = "docker"
-        config {
-          image        = "thoward27/bookclub:main"
-          force_pull   = true
-          network_mode = "host"
-          command      = "start"
-          args         = ["--worker"]
-        }
-
-        resources {
-          cpu    = 100
-          memory = 64
-        }
-
-        vault {
-          policies = ["bookclub-prod"]
-        }
-
-        env {
-          LOCO_ENV = "production"
-        }
-
-        template {
-          data        = <<EOH
-          {{ with secret "database/creds/bookclub-prod" }}
-          DATABASE_URL="postgres://{{.Data.username}}:{{.Data.password}}@127.0.0.1:5432/bookclub_production"
-          {{ end }}
-
-          {{ range service "inkwellcollective-redis"}}
-          REDIS_URL="redis://{{.Address}}:{{.Port}}"
-          {{ end }}
-        EOH
-          destination = "secrets/service.env"
-          env         = true
-        }
-      }
-    }
-
-    group "cache" {
-      count = 1
-
-      network {
-        port "db" {
-          to = 6379
-        }
-      }
-
-      service {
-        name     = "inkwellcollective-redis"
-        tags     = ["global", "cache"]
-        port     = "db"
-        provider = "nomad"
-
-        check {
-          name     = "alive"
-          type     = "tcp"
-          interval = "10s"
-          timeout  = "2s"
-        }
-      }
-
-      restart {
-        attempts = 2
-        interval = "30m"
-        delay    = "15s"
-        mode     = "fail"
-      }
-
-      ephemeral_disk {
-        sticky  = true
-        migrate = true
-        size    = 300
-      }
-
-      task "redis" {
-        driver = "docker"
-        config {
-          image          = "redis:7"
-          ports          = ["db"]
-          auth_soft_fail = true
-        }
-
-        identity {
-          env  = true
-          file = true
-        }
-
-        resources {
-          cpu    = 100 # 500 MHz
-          memory = 64  # 256MB
-        }
-
-        kill_timeout = "30s"
+        destination = "secrets/tunnel.yaml"
+        env         = false
       }
     }
   }
+
+  group "server" {
+    count = 1
+
+    network {
+      port "http" {}
+    }
+
+    service {
+      name = "inkwellcollective-server"
+      port = "http"
+      check {
+        type     = "http"
+        port     = "http"
+        path     = "/_ping"
+        timeout  = "1s"
+        interval = "10s"
+        check_restart {
+          limit = 5
+          grace = "30s"
+        }
+      }
+      tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.bookclub.rule=Host(`www.inkwellcollective.org`)",
+        "traefik.http.routers.bookclub.entrypoints=websecure",
+        "traefik.http.routers.bookclub.tls.certresolver=letsencrypt",
+        "traefik.http.routers.bookclub.middlewares=authelia@docker",
+        "traefik.http.services.bookclub.loadbalancer.server.port=${NOMAD_PORT_http}"
+      ]
+    }
+
+    task "bookclub" {
+      driver = "docker"
+      config {
+        image        = "thoward27/bookclub:main"
+        force_pull   = true
+        network_mode = "host"
+        ports        = ["http"]
+        command      = "start"
+      }
+
+      resources {
+        cpu    = 100
+        memory = 64
+      }
+
+      vault {
+        policies = ["bookclub-prod"]
+      }
+
+      env {
+        PORT     = "${NOMAD_PORT_http}"
+        HOST     = "https://bookclub.tomhoward.codes"
+        LOCO_ENV = "production"
+      }
+
+      template {
+        data        = <<EOH
+          {{ with secret "database/creds/bookclub-prod" }}
+          DATABASE_URL="postgres://{{.Data.username}}:{{.Data.password}}@127.0.0.1:5432/bookclub_production"
+          {{ end }}
+
+          {{ range service "inkwellcollective-redis"}}
+          REDIS_URL="redis://{{.Address}}:{{.Port}}"
+          {{ end }}
+        EOH
+        destination = "secrets/service.env"
+        env         = true
+      }
+    }
+  }
+
+  group "worker" {
+    count = 1
+
+    task "worker" {
+      driver = "docker"
+      config {
+        image        = "thoward27/bookclub:main"
+        force_pull   = true
+        network_mode = "host"
+        command      = "start"
+        args         = ["--worker"]
+      }
+
+      resources {
+        cpu    = 100
+        memory = 64
+      }
+
+      vault {
+        policies = ["bookclub-prod"]
+      }
+
+      env {
+        LOCO_ENV = "production"
+      }
+
+      template {
+        data        = <<EOH
+          {{ with secret "database/creds/bookclub-prod" }}
+          DATABASE_URL="postgres://{{.Data.username}}:{{.Data.password}}@127.0.0.1:5432/bookclub_production"
+          {{ end }}
+
+          {{ range service "inkwellcollective-redis"}}
+          REDIS_URL="redis://{{.Address}}:{{.Port}}"
+          {{ end }}
+        EOH
+        destination = "secrets/service.env"
+        env         = true
+      }
+    }
+  }
+
+  group "cache" {
+    count = 1
+
+    network {
+      port "db" {
+        to = 6379
+      }
+    }
+
+    service {
+      name     = "inkwellcollective-redis"
+      tags     = ["global", "cache"]
+      port     = "db"
+      provider = "nomad"
+
+      check {
+        name     = "alive"
+        type     = "tcp"
+        interval = "10s"
+        timeout  = "2s"
+      }
+    }
+
+    restart {
+      attempts = 2
+      interval = "30m"
+      delay    = "15s"
+      mode     = "fail"
+    }
+
+    ephemeral_disk {
+      sticky  = true
+      migrate = true
+      size    = 300
+    }
+
+    task "redis" {
+      driver = "docker"
+      config {
+        image          = "redis:7"
+        ports          = ["db"]
+        auth_soft_fail = true
+      }
+
+      identity {
+        env  = true
+        file = true
+      }
+
+      resources {
+        cpu    = 100 # 500 MHz
+        memory = 64  # 256MB
+      }
+
+      kill_timeout = "30s"
+    }
+  }
+}
