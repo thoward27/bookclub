@@ -131,7 +131,8 @@ ingress:
     task "traefik" {
       driver = "docker"
       config {
-        image = "traefik:v2.9"
+        image        = "traefik:v2.9"
+        network_mode = "host"
         args = [
           "--api.insecure",
           "--log.level=DEBUG",
