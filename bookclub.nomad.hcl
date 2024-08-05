@@ -141,9 +141,9 @@ ingress:
           "--entrypoints.websecure.forwardedHeaders.insecure=true",
           "--entrypoints.websecure.http.middlewares=inkwellcollective-authelia@consulcatalog",
 
-          "--providers.consulcatalog=true",
-          "--providers.consulcatalog.endpoint=http://127.0.0.1:8500",
-          "--providers.consulcatalog.prefix=inkwellcollectivetraefik",
+          "--providers.consulCatalog=true",
+          "--providers.consulCatalog.endpoint.address=http://127.0.0.1:8500",
+          "--providers.consulCatalog.prefix=inkwellcollectivetraefik",
 
           "--certificatesresolvers.letsencrypt.acme.dnsChallenge=true",
           "--certificatesresolvers.letsencrypt.acme.dnsChallenge.provider=cloudflare",
