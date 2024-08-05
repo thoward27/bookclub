@@ -18,6 +18,144 @@ job "bookclub" {
     healthy_deadline = "5m"
   }
 
+  group "cloudflare" {
+    count = 1
+
+    task "cloudflare" {
+      driver = "docker"
+      config {
+        image        = "cloudflare/cloudflared:latest"
+        force_pull   = true
+        network_mode = "host"
+        command      = "tunnel"
+        args         = ["--config", "/secrets/tunnel.yaml", "run"]
+      }
+
+      resources {
+        cpu    = 100
+        memory = 64
+      }
+
+      vault {
+        policies = ["bookclub-prod"]
+      }
+
+      template {
+        data        = <<EOH
+{{- with secret "kv/inkwellcollective/cloudflare" }}
+{
+  "AccountTag":"{{ .Data.AccountTag }}",
+  "TunnelSecret":"{{ .Data.TunnelSecret }}",
+  "TunnelID":"{{ .Data.TunnelID }}"
+}
+{{- end }}
+          EOH
+        destination = "secrets/credentials.json"
+        env         = false
+      }
+
+      # TODO: HA Proxy to scale up the number of servers running. Cloudflared can only route to 1 thing.
+      template {
+        data        = <<EOH
+{{- with secret "kv/inkwellcollective/cloudflare" }}
+tunnel: {{ .Data.TunnelID }} 
+{{- end }}
+credentials-file: /secrets/credentials.json
+
+ingress:
+  {{- range $i, $s := service "inkwellcollective-traefik"}}
+  {{- if eq $i 0}}
+  - hostname: inkwellcollective.org
+    service: https://{{ .Address }}:{{ .Port }}
+    originRequest:
+      noTLSVerify: true
+  - hostname: *.inkwellcollective.org
+    service: https://{{ .Address }}:{{ .Port }}
+    originRequest:
+      noTLSVerify: true
+  {{- end }}
+  {{- end }}
+  - service: http_status:404
+        EOH
+        destination = "secrets/tunnel.yaml"
+        env         = false
+      }
+    }
+  }
+
+  group "traefik" {
+    count = 1
+
+    network {
+      port "https" {}
+      port "dashboard" {}
+    }
+
+    service {
+      name = "inkwellcollective-traefik"
+      port = "https"
+      check {
+        type     = "http"
+        port     = "https"
+        path     = "/ping"
+        interval = "10s"
+        timeout  = "2s"
+      }
+    }
+
+    service {
+      name = "inkwellcollective-traefikdashboard"
+      port = "dashboard"
+      check {
+        type     = "http"
+        port     = "dashboard"
+        path     = "/ping"
+        interval = "10s"
+        timeout  = "2s"
+      }
+      tags = [
+        "inkwellcollectivetraefik.enable=true",
+        "inkwellcollectivetraefik.http.routers.traefik.rule=Host(`traefik.inkwellcollective.org`)",
+        "inkwellcollectivetraefik.http.routers.traefik.entrypoints=websecure",
+        "inkwellcollectivetraefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      ]
+    }
+
+    task "traefik" {
+      config {
+        image = "traefik:v2.9"
+        mount {
+          type   = "bind"
+          source = "/mnt/pool-internal-hdd/projects/inkwellcollective/traefik/letsencrypt"
+          target = "/letsencrypt"
+        }
+        args = [
+          "--api.insecure",
+          "--log.level=DEBUG",
+
+          "--entrypoints.dashboard.address=:{{ env 'NOMAD_PORT_dashboard' }}",
+          "--entrypoints.websecure.address=:{{ env 'NOMAD_PORT_https' }}",
+          "--entrypoints.websecure.forwardedHeaders.insecure=true",
+          "--entrypoints.websecure.http.middlewares=inkwellcollective-authelia@consulcatalog",
+
+          "--providers.consulcatalog=true",
+          "--providers.consulcatalog.endpoint=http://127.0.0.1:8500",
+          "--providers.consulcatalog.prefix=inkwellcollectivetraefik",
+
+          "--certificatesresolvers.letsencrypt.acme.dnsChallenge=true"
+          "--certificatesresolvers.letsencrypt.acme.dnsChallenge.provider=cloudflare"
+          "--certificatesresolvers.letsencrypt.acme.email=info@tomhoward.codes"
+          "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+        ]
+      }
+
+      resources {
+        cpu    = 100
+        memory = 64
+      }
+    }
+  }
+
   group "ldap" {
     count = 1
 
@@ -47,10 +185,10 @@ job "bookclub" {
         timeout  = "2s"
       }
       tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.ldap.rule=Host(`ldap.inkwellcollective.org`)",
-        "traefik.http.routers.ldap.entrypoints=websecure",
-        "traefik.http.routers.ldap.tls.certresolver=letsencrypt"
+        "inkwellcollectivetraefik.enable=true",
+        "inkwellcollectivetraefik.http.routers.ldap.rule=Host(`ldap.inkwellcollective.org`)",
+        "inkwellcollectivetraefik.http.routers.ldap.entrypoints=websecure",
+        "inkwellcollectivetraefik.http.routers.ldap.tls.certresolver=letsencrypt"
       ]
     }
 
@@ -123,14 +261,14 @@ job "bookclub" {
         }
       }
       tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.authelia.rule=Host(`auth.inkwellcollective.org`)",
-        "traefik.http.routers.authelia.entrypoints=websecure",
-        "traefik.http.routers.authelia.tls.certresolver=letsencrypt",
+        "inkwellcollectivetraefik.enable=true",
+        "inkwellcollectivetraefik.http.routers.authelia.rule=Host(`auth.inkwellcollective.org`)",
+        "inkwellcollectivetraefik.http.routers.authelia.entrypoints=websecure",
+        "inkwellcollectivetraefik.http.routers.authelia.tls.certresolver=letsencrypt",
         # Middleware Registration.
-        "traefik.http.middlewares.authelia-inkwellcollective.forwardAuth.address=http://{{ $NOMAD_ADDR_http }}/api/verify?rd=https%3A%2F%2Fauth.inkwellcollective.org",
-        "traefik.http.middlewares.authelia-inkwellcollective.forwardAuth.trustForwardHeader=true",
-        "traefik.http.middlewares.authelia-inkwellcollective.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email",
+        "inkwellcollectivetraefik.http.middlewares.authelia-inkwellcollective.forwardAuth.address=http://{{ env $NOMAD_ADDR_http }}/api/verify?rd=https%3A%2F%2Fauth.inkwellcollective.org",
+        "inkwellcollectivetraefik.http.middlewares.authelia-inkwellcollective.forwardAuth.trustForwardHeader=true",
+        "inkwellcollectivetraefik.http.middlewares.authelia-inkwellcollective.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email",
       ]
     }
 
@@ -289,62 +427,7 @@ EOH
     }
   }
 
-  group "cloudflare" {
-    count = 1
 
-    task "cloudflare" {
-      driver = "docker"
-      config {
-        image        = "cloudflare/cloudflared:latest"
-        force_pull   = true
-        network_mode = "host"
-        command      = "tunnel"
-        args         = ["--config", "/secrets/tunnel.yaml", "run"]
-      }
-
-      resources {
-        cpu    = 100
-        memory = 64
-      }
-
-      vault {
-        policies = ["bookclub-prod"]
-      }
-
-      template {
-        data        = <<EOH
-{{- with secret "kv/inkwellcollective/cloudflare" }}
-{
-  "AccountTag":"{{ .Data.AccountTag }}",
-  "TunnelSecret":"{{ .Data.TunnelSecret }}",
-  "TunnelID":"{{ .Data.TunnelID }}"
-}
-{{- end }}
-          EOH
-        destination = "secrets/credentials.json"
-        env         = false
-      }
-
-      # TODO: HA Proxy to scale up the number of servers running. Cloudflared can only route to 1 thing.
-      template {
-        data        = <<EOH
-{{- with secret "kv/inkwellcollective/cloudflare" }}
-tunnel: {{ .Data.TunnelID }} 
-{{- end }}
-credentials-file: /secrets/credentials.json
-
-ingress:
-  - hostname: www.inkwellcollective.org
-    service: https://localhost
-    originRequest:
-      noTLSVerify: true
-  - service: http_status:404
-        EOH
-        destination = "secrets/tunnel.yaml"
-        env         = false
-      }
-    }
-  }
 
   group "server" {
     count = 1
@@ -368,12 +451,12 @@ ingress:
         }
       }
       tags = [
-        "traefik.enable=true",
-        "traefik.http.routers.bookclub.rule=Host(`www.inkwellcollective.org`)",
-        "traefik.http.routers.bookclub.entrypoints=websecure",
-        "traefik.http.routers.bookclub.tls.certresolver=letsencrypt",
-        "traefik.http.routers.bookclub.middlewares=authelia-inkwellcollective@consulcatalog",
-        "traefik.http.services.bookclub.loadbalancer.server.port=${NOMAD_PORT_http}"
+        "inkwellcollectivetraefik.enable=true",
+        "inkwellcollectivetraefik.http.routers.bookclub.rule=Host(`www.inkwellcollective.org`)",
+        "inkwellcollectivetraefik.http.routers.bookclub.entrypoints=websecure",
+        "inkwellcollectivetraefik.http.routers.bookclub.tls.certresolver=letsencrypt",
+        "inkwellcollectivetraefik.http.routers.bookclub.middlewares=authelia-inkwellcollective@consulcatalog",
+        "inkwellcollectivetraefik.http.services.bookclub.loadbalancer.server.port=${NOMAD_PORT_http}"
       ]
     }
 
@@ -470,8 +553,8 @@ ingress:
     }
 
     service {
-      name     = "inkwellcollective-redis"
-      port     = "db"
+      name = "inkwellcollective-redis"
+      port = "db"
       check {
         name     = "alive"
         type     = "tcp"
