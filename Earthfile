@@ -7,7 +7,8 @@ backend:
     FROM rust:latest
     COPY --dir assets migration src templates .
     COPY Cargo.toml Cargo.lock .
-    RUN cargo build --release
+    ARG --required EARTHLY_GIT_HASH
+    RUN VERSION=$EARTHLY_GIT_HASH cargo build --release
     COPY config/production.yaml config/production.yaml
     SAVE ARTIFACT target/release/bookclub-cli
 
