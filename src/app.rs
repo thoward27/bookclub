@@ -39,6 +39,14 @@ impl Hooks for App {
         )
     }
 
+    // TODO: This removes the default logging configuration, as documented: https://github.com/loco-rs/loco/blob/master/src/logger.rs
+    // fn init_logger(config: &config::Config, _env: &Environment) -> Result<bool> {
+    //     tracing_subscriber::Registry::default()
+    //     .with(sentry::integrations::tracing::layer()).init();
+    //     logger::init(&config.logger);
+    //     Ok(true)
+    // }
+
     async fn boot(mode: StartMode, environment: &Environment) -> Result<BootResult> {
         create_app::<Self, Migrator>(mode, environment).await
     }
