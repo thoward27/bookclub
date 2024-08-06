@@ -1,13 +1,13 @@
 use crate::common::middlewares::auth::Auth;
 use crate::models::_entities::{books, users};
 use crate::models::books::BookUpdateParams;
-use crate::views::books::{BookFormTemplate, BookTemplate, BooksTemplate};
+use crate::views::books::{BookFormTemplate, BookTemplate, BooksCircuitNav, BooksTemplate};
 use axum::debug_handler;
 use loco_rs::prelude::*;
 use migration::extension::postgres::PgExpr;
 use sea_orm::sea_query::Expr;
-use sea_orm::QueryOrder;
-use sea_orm::{EntityTrait, QueryFilter};
+use sea_orm::{EntityTrait, FromQueryResult, QueryFilter};
+use sea_orm::{QueryOrder, QuerySelect};
 use serde::{Deserialize, Serialize};
 
 #[debug_handler]
@@ -79,11 +79,36 @@ async fn update_one(
     Ok(BookFormTemplate::new(book, meeting, auth.user, &ctx.db).await)
 }
 
+#[derive(FromQueryResult)]
+struct Circuit {
+    pub circuit_title: String,
+}
+
+#[debug_handler]
+async fn get_book_circuits(
+    _auth: Auth<users::Model>,
+    State(ctx): State<AppContext>,
+) -> Result<impl IntoResponse> {
+    let circuits = books::Entity::find()
+        .select_only()
+        .column(books::Column::CircuitTitle)
+        .distinct()
+        .into_model::<Circuit>()
+        .all(&ctx.db)
+        .await
+        .unwrap()
+        .iter()
+        .map(|b| b.circuit_title.clone())
+        .collect();
+    Ok(BooksCircuitNav { circuits })
+}
+
 pub fn routes() -> Routes {
     Routes::new()
         .prefix("books")
         .add("/", get(get_books))
-        .add("/circuit/:name", get(get_books_by_circuit))
         .add("/:id", get(get_one))
         .add("/:id", post(update_one))
+        .add("/circuits/nav", get(get_book_circuits))
+        .add("/circuits/:name", get(get_books_by_circuit))
 }

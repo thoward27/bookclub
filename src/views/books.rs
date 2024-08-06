@@ -6,6 +6,18 @@ use serde::Serialize;
 use std::vec::Vec;
 
 #[derive(Template, Debug, Clone)]
+#[template(path = "components/book_circuits_nav.html", escape = "none")]
+pub struct BooksCircuitNav {
+    pub circuits: Vec<String>,
+}
+
+impl ViewRenderer for BooksCircuitNav {
+    fn render<S: Serialize>(&self, _key: &str, _data: S) -> Result<String> {
+        Ok(Template::render(self).unwrap())
+    }
+}
+
+#[derive(Template, Debug, Clone)]
 #[template(path = "components/book_card.html", escape = "none")]
 pub struct BookCardTemplate {
     pub title: String,
