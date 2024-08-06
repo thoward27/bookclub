@@ -6,7 +6,7 @@ use axum::debug_handler;
 use loco_rs::prelude::*;
 use migration::extension::postgres::PgExpr;
 use sea_orm::sea_query::Expr;
-use sea_orm::{EntityTrait, FromQueryResult, QueryFilter};
+use sea_orm::{EntityTrait, QueryFilter};
 use sea_orm::{QueryOrder, QuerySelect};
 use serde::{Deserialize, Serialize};
 
@@ -79,11 +79,6 @@ async fn update_one(
     Ok(BookFormTemplate::new(book, meeting, auth.user, &ctx.db).await)
 }
 
-#[derive(FromQueryResult)]
-struct Circuit {
-    pub circuit_title: String,
-}
-
 #[debug_handler]
 async fn get_book_circuits(
     _auth: Auth<users::Model>,
@@ -93,13 +88,10 @@ async fn get_book_circuits(
         .select_only()
         .column(books::Column::CircuitTitle)
         .distinct()
-        .into_model::<Circuit>()
+        .into_tuple()
         .all(&ctx.db)
         .await
-        .unwrap()
-        .iter()
-        .map(|b| b.circuit_title.clone())
-        .collect();
+        .unwrap();
     Ok(BooksCircuitNav { circuits })
 }
 
