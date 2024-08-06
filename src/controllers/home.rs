@@ -5,7 +5,7 @@ use loco_rs::prelude::*;
 pub async fn redirect() -> impl IntoResponse {
     Response::builder()
         .status(StatusCode::FOUND)
-        .header("Location", "/books")
+        .header("Location", "/meetings")
         .body(axum::body::Body::empty())
         .unwrap()
 }
