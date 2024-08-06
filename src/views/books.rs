@@ -1,4 +1,4 @@
-use crate::models::_entities::{books, circuits, meetings, users};
+use crate::models::_entities::{books, meetings, users};
 use askama_axum::Template;
 use futures::stream::{self, StreamExt};
 use loco_rs::prelude::*;
@@ -39,12 +39,6 @@ impl BooksTemplate {
         Self {
             books: stream::iter(books)
                 .then(|book| async {
-                    let circuit = book
-                        .find_related(circuits::Entity)
-                        .one(&ctx)
-                        .await
-                        .unwrap()
-                        .unwrap();
                     let user = book
                         .find_related(users::Entity)
                         .one(&ctx)
@@ -54,7 +48,7 @@ impl BooksTemplate {
                     BookCardTemplate {
                         title: book.title,
                         author: book.author,
-                        circuit: circuit.title,
+                        circuit: book.circuit_title,
                         username: user.name,
                         isbn10: book.isbn10,
                         isbn13: book.isbn13,

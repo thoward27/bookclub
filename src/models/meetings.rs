@@ -38,7 +38,7 @@ impl super::_entities::meetings::Model {
         let mut template = meeting.get_next_meeting_template(db).await.unwrap();
         template.order.rotate_left(1);
         let book_placeholder = books::Model::get_or_create_placeholder(
-            book.circuit_id,
+            book.circuit_title,
             template.order.first().unwrap().id,
             db,
         )

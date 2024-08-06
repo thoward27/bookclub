@@ -18,6 +18,7 @@ impl MigrationTrait for Migration {
             .col(string_null(Users::EmailVerificationToken))
             .col(timestamp_null(Users::EmailVerificationSentAt))
             .col(timestamp_null(Users::EmailVerifiedAt))
+            .col(boolean(Users::IsSuperuser).default(false))
             .to_owned();
         manager.create_table(table).await?;
         Ok(())
@@ -44,4 +45,5 @@ pub enum Users {
     EmailVerificationToken,
     EmailVerificationSentAt,
     EmailVerifiedAt,
+    IsSuperuser,
 }

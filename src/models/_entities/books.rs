@@ -13,25 +13,17 @@ pub struct Model {
     #[sea_orm(unique)]
     pub title: String,
     pub author: String,
-    pub circuit_id: i32,
     pub user_id: i32,
     pub calibre_link: String,
     #[sea_orm(unique)]
     pub isbn10: String,
     #[sea_orm(unique)]
     pub isbn13: String,
+    pub circuit_title: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::circuits::Entity",
-        from = "Column::CircuitId",
-        to = "super::circuits::Column::Id",
-        on_update = "Cascade",
-        on_delete = "Cascade"
-    )]
-    Circuits,
     #[sea_orm(has_many = "super::meetings::Entity")]
     Meetings,
     #[sea_orm(
@@ -42,12 +34,6 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Users,
-}
-
-impl Related<super::circuits::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Circuits.def()
-    }
 }
 
 impl Related<super::meetings::Entity> for Entity {

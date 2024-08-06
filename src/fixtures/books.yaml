@@ -2,7 +2,7 @@
 - id: 1
   title: The Immortality Key
   author: Brian C. Muraresku
-  circuit_id: 1 # Nonfiction
+  circuit_title: Nonfiction
   user_id: 1 # Tom
   calibre_link: "https://calibre.inkwellcollective.com/books/the-immortality-key"
   isbn10: "1250207142"
@@ -12,7 +12,7 @@
 - id: 2
   title: The Children of Ash and Elm
   author: Neil Price
-  circuit_id: 1 # Nonfiction
+  circuit_title: Nonfiction
   user_id: 2 # Tomas
   calibre_link: "https://calibre.inkwellcollective.com/books/the-children-of-ash-and-elm"
   isbn10: "0465096988"
@@ -22,7 +22,7 @@
 - id: 3
   title: Rules for Radicals
   author: Saul Alinsky
-  circuit_id: 1 # Nonfiction
+  circuit_title: Nonfiction
   user_id: 3 # Najib
   calibre_link: "https://calibre.inkwellcollective.com/books/rules-for-radicals"
   isbn10: "0679721134"
@@ -32,7 +32,7 @@
 - id: 4
   title: The Name of the Wind
   author: Patrick Rothfuss
-  circuit_id: 2 # Fiction
+  circuit_title: Fiction
   user_id: 4 # Bryce
   calibre_link: "https://calibre.inkwellcollective.com/books/the-name-of-the-wind"
   isbn10: "0756404746"
@@ -42,7 +42,7 @@
 - id: 5
   title: The Devil in White City
   author: Erik Larson
-  circuit_id: 1 # Nonfiction
+  circuit_title: Nonfiction
   user_id: 4 # Bryce
   calibre_link: "https://calibre.inkwellcollective.com/books/the-devil-in-white-city"
   isbn10: "0375725601"
@@ -52,7 +52,7 @@
 - id: 6
   title: The Wise Man's Fear
   author: Patrick Rothfuss
-  circuit_id: 2 # Fiction
+  circuit_title: Fiction
   user_id: 2 # Tomas
   calibre_link: "https://calibre.inkwellcollective.com/books/the-wise-mans-fear"
   isbn10: "0756407915"
@@ -62,7 +62,7 @@
 - id: 7
   title: Magician's of the Gods
   author: Graham Hancock
-  circuit_id: 1 # Nonfiction
+  circuit_title: Nonfiction
   user_id: 1 # Tom
   calibre_link: "https://calibre.inkwellcollective.com/books/magicians-of-the-gods"
   isbn10: "1250118409"
@@ -72,7 +72,7 @@
 - id: 8
   title: Columbus Day
   author: Craig Alanson
-  circuit_id: 2 # Fiction
+  circuit_title: Fiction
   user_id: 1 # Tom
   calibre_link: "https://calibre.inkwellcollective.com/books/columbus-day"
   isbn10: "1542046903"
@@ -82,7 +82,7 @@
 - id: 9
   title: Food of the Gods
   author: Terence McKenna
-  circuit_id: 1 # Nonfiction
+  circuit_title: Nonfiction
   user_id: 2 # Tomas
   calibre_link: "https://calibre.inkwellcollective.com/books/food-of-the-gods"
   isbn10: "0553371304"
@@ -92,7 +92,7 @@
 - id: 10
   title: The Anarchist's Handbook
   author: Michael Malice
-  circuit_id: 1 # Nonfiction
+  circuit_title: Nonfiction
   user_id: 3 # Najib
   calibre_link: "https://calibre.inkwellcollective.com/books/the-anarchists-handbook"
   isbn10: "1569800863"
@@ -102,7 +102,7 @@
 - id: 11
   title: The Way of Kings
   author: Brandon Sanderson
-  circuit_id: 2 # Fiction
+  circuit_title: Fiction
   user_id: 3 # Najib
   calibre_link: "https://calibre.inkwellcollective.com/books/the-way-of-kings"
   isbn10: "0765326353"
@@ -112,7 +112,7 @@
 - id: 12
   title: "Conspiracy: Peter Thiel, Hulk Hogan, Gawker, and the Anatomy of Intrigue"
   author: Ryan Holiday
-  circuit_id: 1 # Nonfiction
+  circuit_title: Nonfiction
   user_id: 4 # Bryce
   calibre_link: "https://calibre.inkwellcollective.com/books/conspiracy"
   isbn10: "0062457713"
@@ -122,7 +122,7 @@
 - id: 13
   title: The Final Empire
   author: Brandon Sanderson
-  circuit_id: 2 # Fiction
+  circuit_title: Fiction
   user_id: 1 # Tom
   calibre_link: "https://calibre.inkwellcollective.com/books/the-final-empire"
   isbn10: "0765311780"
@@ -132,7 +132,7 @@
 - id: 14
   title: In Cold Blood
   author: Truman Capote
-  circuit_id: 1 # Nonfiction
+  circuit_title: Nonfiction
   user_id: 6 # Jason
   calibre_link: "https://calibre.inkwellcollective.com/books/in-cold-blood"
   isbn10: "0679745580"
@@ -142,7 +142,7 @@
 - id: 15
   title: The Eye of the World
   author: Robert Jordan
-  circuit_id: 2 # Fiction
+  circuit_title: Fiction
   user_id: 3 # Najib
   calibre_link: "https://calibre.inkwellcollective.com/books/the-eye-of-the-world"
   isbn10: "0812511816"
@@ -152,7 +152,7 @@
 - id: 16
   title: Atomic Habits
   author: James Clear
-  circuit_id: 1 # Nonfiction
+  circuit_title: Nonfiction
   user_id: 1 # Tom
   calibre_link: "https://calibre.inkwellcollective.com/books/atomic-habits"
   isbn10: "0735211299"
@@ -162,7 +162,7 @@
 - id: 17
   title: American Gods
   author: Neil Gaiman
-  circuit_id: 2 # Fiction
+  circuit_title: Fiction
   user_id: 2 # Tomas
   calibre_link: "https://calibre.inkwellcollective.com/books/american-gods"
   isbn10: "0062080237"
@@ -172,7 +172,7 @@
 - id: 18
   title: Entangled Life
   author: Merlin Sheldrake
-  circuit_id: 1 # Nonfiction
+  circuit_title: Nonfiction
   user_id: 5 # Noah
   calibre_link: "https://calibre.inkwellcollective.com/books/entangled-life"
   isbn10: "0525510319"

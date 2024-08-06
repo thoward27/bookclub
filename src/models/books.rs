@@ -3,16 +3,18 @@ use super::_entities::{
     meetings,
 };
 use loco_rs::prelude::*;
+use migration::extension::postgres::PgExpr;
+use sea_orm::sea_query::Expr;
 
 impl super::_entities::books::Model {
     /// Return a placeholder book for a user in a circuit or create it.
     pub async fn get_or_create_placeholder(
-        circuit_id: i32,
+        circuit_title: String,
         user_id: i32,
         db: &DatabaseConnection,
     ) -> ModelResult<books::Model> {
         if let Some(book) = books::Entity::find()
-            .filter(books::Column::CircuitId.eq(circuit_id))
+            .filter(Expr::col(books::Column::CircuitTitle).ilike(&circuit_title))
             .filter(books::Column::UserId.eq(user_id))
             .filter(books::Column::Title.eq("TBD"))
             .one(db)
@@ -23,7 +25,7 @@ impl super::_entities::books::Model {
             let book = books::ActiveModel {
                 title: ActiveValue::set("TBD".to_string()),
                 author: ActiveValue::set("TBD".to_string()),
-                circuit_id: ActiveValue::set(circuit_id),
+                circuit_title: ActiveValue::set(circuit_title),
                 user_id: ActiveValue::set(user_id),
                 calibre_link: ActiveValue::set("".to_string()),
                 isbn10: ActiveValue::set("TBD".to_string()),

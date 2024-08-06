@@ -12,19 +12,11 @@ impl MigrationTrait for Migration {
                     .col(pk_auto(Books::Id))
                     .col(string_uniq(Books::Title))
                     .col(string(Books::Author))
-                    .col(integer(Books::CircuitId))
                     .col(integer(Books::UserId))
                     .col(string(Books::CalibreLink))
                     .col(string_uniq(Books::Isbn10))
                     .col(string_uniq(Books::Isbn13))
-                    .foreign_key(
-                        ForeignKey::create()
-                            .name("fk-books-circuits")
-                            .from(Books::Table, Books::CircuitId)
-                            .to(Circuits::Table, Circuits::Id)
-                            .on_delete(ForeignKeyAction::Cascade)
-                            .on_update(ForeignKeyAction::Cascade),
-                    )
+                    .col(string(Books::CircuitTitle).default("".to_string()))
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-books-users")
@@ -51,18 +43,13 @@ enum Books {
     Id,
     Title,
     Author,
-    CircuitId,
+    CircuitTitle,
     UserId,
     CalibreLink,
     Isbn10,
     Isbn13,
 }
 
-#[derive(DeriveIden)]
-enum Circuits {
-    Table,
-    Id,
-}
 #[derive(DeriveIden)]
 enum Users {
     Table,

@@ -17,7 +17,7 @@ use sea_orm::{ConnectionTrait, DatabaseConnection, Statement};
 
 use crate::{
     controllers, initializers,
-    models::_entities::{books, circuits, meetings, notes, picks, users},
+    models::_entities::{books, meetings, users},
     tasks,
     workers::downloader::DownloadWorker,
 };
@@ -60,11 +60,8 @@ impl Hooks for App {
     fn routes(_ctx: &AppContext) -> AppRoutes {
         AppRoutes::with_default_routes()
             .add_route(controllers::meetings::routes())
-            .add_route(controllers::circuits::routes())
             .add_route(controllers::books::routes())
             .add_route(controllers::home::routes())
-            .add_route(controllers::picks::routes())
-            .add_route(controllers::notes::routes())
             .add_route(controllers::auth::routes())
             .add_route(controllers::user::routes())
     }
@@ -83,9 +80,6 @@ impl Hooks for App {
 
     async fn truncate(db: &DatabaseConnection) -> Result<()> {
         truncate_table(db, users::Entity).await?;
-        truncate_table(db, notes::Entity).await?;
-        truncate_table(db, picks::Entity).await?;
-        truncate_table(db, circuits::Entity).await?;
         truncate_table(db, books::Entity).await?;
         truncate_table(db, meetings::Entity).await?;
         Ok(())
@@ -93,10 +87,6 @@ impl Hooks for App {
 
     async fn seed(db: &DatabaseConnection, base: &Path) -> Result<()> {
         db::seed::<users::ActiveModel>(db, &base.join("users.yaml").display().to_string()).await?;
-        db::seed::<notes::ActiveModel>(db, &base.join("notes.yaml").display().to_string()).await?;
-        db::seed::<picks::ActiveModel>(db, &base.join("picks.yaml").display().to_string()).await?;
-        db::seed::<circuits::ActiveModel>(db, &base.join("circuits.yaml").display().to_string())
-            .await?;
         db::seed::<books::ActiveModel>(db, &base.join("books.yaml").display().to_string()).await?;
         db::seed::<meetings::ActiveModel>(db, &base.join("meetings.yaml").display().to_string())
             .await?;

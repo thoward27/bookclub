@@ -1,5 +1,5 @@
 use crate::common::middlewares::auth::Auth;
-use crate::models::_entities::{books, circuits, users};
+use crate::models::_entities::{books, users};
 use crate::models::books::BookUpdateParams;
 use crate::views::books::{BookFormTemplate, BookTemplate, BooksTemplate};
 use axum::debug_handler;
@@ -7,7 +7,7 @@ use loco_rs::prelude::*;
 use migration::extension::postgres::PgExpr;
 use sea_orm::sea_query::Expr;
 use sea_orm::QueryOrder;
-use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
+use sea_orm::{EntityTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 
 #[debug_handler]
@@ -16,14 +16,8 @@ async fn get_books_by_circuit(
     State(ctx): State<AppContext>,
     Path(name): Path<String>,
 ) -> Result<impl IntoResponse> {
-    let circuit = circuits::Entity::find()
-        .filter(Expr::col(circuits::Column::Title).ilike(name))
-        .one(&ctx.db)
-        .await
-        .unwrap()
-        .unwrap();
     let books = books::Entity::find()
-        .filter(books::Column::CircuitId.eq(circuit.id))
+        .filter(Expr::col(books::Column::CircuitTitle).ilike(name))
         .order_by_desc(books::Column::Id)
         .all(&ctx.db)
         .await
