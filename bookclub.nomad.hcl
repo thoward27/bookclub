@@ -64,13 +64,13 @@ tunnel: {{ .Data.TunnelID }}
 credentials-file: /secrets/credentials.json
 
 ingress:
-  {{- range $i, $s := service "inkwellcollective-traefik"}}
+  {{- range $i, $s := service "inkwellcollective-traefik|any"}}
   {{- if eq $i 0}}
   - hostname: inkwellcollective.org
     service: https://{{ .Address }}:{{ .Port }}
     originRequest:
       noTLSVerify: true
-  - hostname: *.inkwellcollective.org
+  - hostname: "*.inkwellcollective.org"
     service: https://{{ .Address }}:{{ .Port }}
     originRequest:
       noTLSVerify: true
@@ -101,13 +101,6 @@ ingress:
     service {
       name = "inkwellcollective-traefik"
       port = "https"
-      check {
-        type     = "http"
-        port     = "https"
-        path     = "/ping"
-        interval = "10s"
-        timeout  = "2s"
-      }
     }
 
     service {
@@ -116,7 +109,7 @@ ingress:
       check {
         type     = "http"
         port     = "dashboard"
-        path     = "/ping"
+        path     = "/"
         interval = "10s"
         timeout  = "2s"
       }
@@ -140,7 +133,7 @@ ingress:
           "--entrypoints.traefik.address=:${NOMAD_PORT_dashboard}",
           "--entrypoints.websecure.address=:${NOMAD_PORT_https}",
           "--entrypoints.websecure.forwardedHeaders.insecure=true",
-          "--entrypoints.websecure.http.middlewares=inkwellcollective-authelia@consulcatalog",
+          "--entrypoints.websecure.http.middlewares=authelia-inkwellcollective@consulcatalog",
 
           "--providers.consulCatalog=true",
           "--providers.consulCatalog.endpoint.address=http://127.0.0.1:8500",
@@ -286,7 +279,7 @@ ingress:
         "inkwellcollectivetraefik.http.routers.authelia.entrypoints=websecure",
         "inkwellcollectivetraefik.http.routers.authelia.tls.certresolver=letsencrypt",
         # Middleware Registration.
-        "inkwellcollectivetraefik.http.middlewares.authelia-inkwellcollective.forwardAuth.address=http://{{ env $NOMAD_ADDR_http }}/api/verify?rd=https%3A%2F%2Fauth.inkwellcollective.org",
+        "inkwellcollectivetraefik.http.middlewares.authelia-inkwellcollective.forwardAuth.address=http://${NOMAD_ADDR_http}/api/verify?rd=https%3A%2F%2Fauth.inkwellcollective.org",
         "inkwellcollectivetraefik.http.middlewares.authelia-inkwellcollective.forwardAuth.trustForwardHeader=true",
         "inkwellcollectivetraefik.http.middlewares.authelia-inkwellcollective.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Name,Remote-Email",
       ]
@@ -390,7 +383,11 @@ password_policy:
 access_control:
   default_policy: two_factor
   rules:
-    - domain: "www.inkwellcollective.org"
+    - domain: "auth.inkwellcollective.org"
+      policy: bypass
+    - domain: 
+      - "www.inkwellcollective.org"
+      - "ldap.inkwellcollective.org"
       policy: one_factor
 
 session:
@@ -431,15 +428,15 @@ storage:
     {{- end }}
 
 notifier:
-  disable_startup_check: true
+  disable_startup_check: false
   smtp:
-    host: smtp.postmark.app
+    host: smtp.postmarkapp.com
     port: 25
     {{- with secret "kv/inkwellcollective/postmark" }}
     username: {{ .Data.username }}
     password: {{ .Data.password }}
     {{- end }}
-    sender: "Authelia <auth@inkwellcollective.org>"
+    sender: "Authelia <auth@tomhoward.codes>"
     disable_require_tls: false
 EOH
         destination = "secrets/configuration.yml"
