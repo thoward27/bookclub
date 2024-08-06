@@ -67,7 +67,8 @@ impl super::_entities::meetings::Model {
 
     /// Whether the next meeting has *not* been set, the book belongs to the user, and the meeting is in the future.
     pub fn is_editable(&self, user: &users::Model, book: &books::Model) -> bool {
-        self.next_meeting_id.is_none() && book.user_id == user.id && self.date > chrono::Utc::now()
+        self.next_meeting_id.is_none()
+            && (user.is_superuser || (book.user_id == user.id && self.date > chrono::Utc::now()))
     }
 
     /// Get the next meeting template.

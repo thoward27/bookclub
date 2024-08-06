@@ -43,7 +43,7 @@ impl super::_entities::books::Model {
         user: &super::_entities::users::Model,
         meeting: &super::_entities::meetings::Model,
     ) -> bool {
-        self.user_id == user.id && meeting.date > chrono::Utc::now()
+        user.is_superuser || (self.user_id == user.id && meeting.date > chrono::Utc::now())
     }
 
     pub async fn get_with_meeting(
