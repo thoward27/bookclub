@@ -15,8 +15,11 @@ pub mod auth {
     #[async_trait]
     pub trait Authenticable: Clone {
         // Proxy Auth Methods.
-        async fn find_or_create_by_email(db: &DatabaseConnection, email: &str)
-            -> ModelResult<Self>;
+        async fn find_or_create_by_email(
+            db: &DatabaseConnection,
+            email: &str,
+            name: &str,
+        ) -> ModelResult<Self>;
         async fn find_by_email(db: &DatabaseConnection, email: &str) -> ModelResult<Self>;
 
         // Disabled Auth Methods.
@@ -54,7 +57,16 @@ pub mod auth {
                         if proxy.enabled {
                             let email = parts
                                 .headers
-                                .get(proxy.header_name.as_str())
+                                .get(proxy.headers.email.as_str())
+                                .ok_or_else(|| {
+                                    Error::Unauthorized("Auth header not found".to_string())
+                                })?
+                                .to_str()
+                                .map_err(|err| Error::Unauthorized(err.to_string()))?
+                                .to_string();
+                            let name = parts
+                                .headers
+                                .get(proxy.headers.name.as_str())
                                 .ok_or_else(|| {
                                     Error::Unauthorized("Auth header not found".to_string())
                                 })?
@@ -63,7 +75,8 @@ pub mod auth {
                                 .to_string();
                             if proxy.auto_sign_up {
                                 return Ok(Self {
-                                    user: T::find_or_create_by_email(&ctx.db, &email).await?,
+                                    user: T::find_or_create_by_email(&ctx.db, &email, &name)
+                                        .await?,
                                 });
                             }
                             let user = T::find_by_email(&ctx.db, &email).await?;

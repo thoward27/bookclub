@@ -4,8 +4,10 @@ settings:
   auth:
     proxy:
       enabled: true
-      header_name: Remote-Email
       auto_sign_up: true
+      headers:
+        email: Remote-Email
+        name: Remote-Name
 
 logger:
   enable: true

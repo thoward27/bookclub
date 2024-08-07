@@ -37,6 +37,12 @@ pub struct Auth {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Proxy {
     pub enabled: bool,
-    pub header_name: String,
     pub auto_sign_up: bool,
+    pub headers: ProxyHeaders,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ProxyHeaders {
+    pub email: String,
+    pub name: String,
 }

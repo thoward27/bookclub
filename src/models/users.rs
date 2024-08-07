@@ -83,7 +83,11 @@ impl auth::Authenticable for super::_entities::users::Model {
         Self::find_by_email(db, email).await
     }
 
-    async fn find_or_create_by_email(db: &DatabaseConnection, email: &str) -> ModelResult<Self> {
+    async fn find_or_create_by_email(
+        db: &DatabaseConnection,
+        email: &str,
+        name: &str,
+    ) -> ModelResult<Self> {
         match Self::find_by_email(db, email).await {
             Ok(user) => Ok(user),
             Err(_) => {
@@ -97,8 +101,8 @@ impl auth::Authenticable for super::_entities::users::Model {
                     db,
                     &RegisterParams {
                         email: email.to_string(),
+                        name: name.to_string(),
                         password,
-                        name: email.split("@").next().unwrap().to_string(),
                     },
                 )
                 .await
