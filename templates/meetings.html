@@ -10,6 +10,9 @@
                     <div class="col-auto pe-0">
                         <span class="fs-4 font-monospace">{{ meeting.date.format("%d") }}</span>
                     </div>
+                    <div class="col d-sm-none pe-0">
+                        <span class="fs-6 fw-light text-secondary">{{ meeting.date.format("%b") }}</span>
+                    </div>
                     <div class="col d-none d-sm-block" style="width: 100px">
                         <span class="fs-6 fw-light text-secondary">{{ meeting.date.format("%b, %a") }}</span>
                     </div>

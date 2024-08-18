@@ -58,6 +58,9 @@
                         </span>
                         {% endif %}
                         {{ user.name }}
+                        {% if loop.first %}
+                        <span class="fw-light text-secondary">(Dungeon Master)</span>
+                        {% endif %}
                     </li>
                     {% endfor %}
                 </ul>
@@ -71,10 +74,12 @@
                         <input type="hidden"
                                name="bench_user_id"
                                value="{{ user.id }}" />
+                        {% if editable %}
                         <span class="material-symbols-outlined align-bottom handle"
                               style="cursor: move">
                             drag_indicator
                         </span>
+                        {% endif %}
                         {{ user.name }}
                     </li>
                     {% endfor %}
@@ -89,7 +94,7 @@
             hx-swap="outerHTML"
             hx-target="#meeting-form"
             hx-disable-elt="this">
-        Create Next Meeting
+        Complete Meeting
     </button>
     {% else %}
     <a href="/meetings/{{ meeting.next_meeting_id.unwrap() }}"
