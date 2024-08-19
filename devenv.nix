@@ -38,7 +38,7 @@ in
       listen_addresses = "127.0.0.1";
       initialDatabases = [{ name = "bookclub_development"; }];
       initialScript = ''
-        CREATE ROLE loco SUPERUSER LOGIN PASSWORD 'loco';
+        CREATE ROLE bookclub_prod SUPERUSER LOGIN PASSWORD 'loco';
       '';
     };
     redis = {
@@ -46,7 +46,7 @@ in
     };
   };
 
-  env.DATABASE_URL = "postgres://loco:loco@127.0.0.1/bookclub_development";
+  env.DATABASE_URL = "postgres://bookclub_prod:loco@127.0.0.1/bookclub_development";
   # This helps me in VSCode avoid having DevEnv Pre-Commit smash the cash from rust-analyzer.
   env.CARGO_TARGET_DIR = "target/devenv";
 

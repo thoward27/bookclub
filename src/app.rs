@@ -66,6 +66,18 @@ impl Hooks for App {
             .add_route(controllers::user::routes())
     }
 
+    async fn after_context(ctx: AppContext) -> Result<AppContext> {
+        // .. use ctx.db here ..
+        ctx.db
+            .execute(Statement::from_string(
+                ctx.db.get_database_backend(),
+                "SET ROLE bookclub_prod",
+            ))
+            .await?;
+        // remember to return ctx when you finish
+        Ok(ctx)
+    }
+
     async fn after_routes(router: AxumRouter, _ctx: &AppContext) -> Result<AxumRouter> {
         Ok(router.route("/", get(controllers::home::redirect)))
     }
