@@ -51,6 +51,8 @@ async fn get_one(
 pub struct BookFormParams {
     pub title: String,
     pub author: String,
+    pub isbn10: String,
+    pub isbn13: String,
 }
 
 #[debug_handler]
@@ -71,6 +73,8 @@ async fn update_one(
             BookUpdateParams {
                 title: params.title.to_string(),
                 author: params.author.to_string(),
+                isbn10: params.isbn10.to_string(),
+                isbn13: params.isbn13.to_string(),
             },
             &ctx.db,
         )

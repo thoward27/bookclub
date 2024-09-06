@@ -69,6 +69,8 @@ impl ActiveModelBehavior for ActiveModel {
 pub struct BookUpdateParams {
     pub title: String,
     pub author: String,
+    pub isbn10: String,
+    pub isbn13: String,
 }
 
 impl super::_entities::books::ActiveModel {
@@ -79,6 +81,8 @@ impl super::_entities::books::ActiveModel {
     ) -> ModelResult<books::Model> {
         self.title = ActiveValue::set(params.title);
         self.author = ActiveValue::set(params.author);
+        self.isbn10 = ActiveValue::set(params.isbn10);
+        self.isbn13 = ActiveValue::set(params.isbn13);
         Ok(self.update(db).await?)
     }
 }
