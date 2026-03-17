@@ -4,7 +4,7 @@ VERSION 0.8
 FROM scratch
 
 deps:
-    FROM rust:1.9.4-trixie
+    FROM rust:1.94.0-trixie
     RUN cargo install cargo-chef
     WORKDIR /app
 
