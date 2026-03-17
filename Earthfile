@@ -3,8 +3,24 @@
 VERSION 0.8
 FROM scratch
 
+deps:
+    FROM rust:1.9.4-trixie
+    RUN cargo install cargo-chef
+    WORKDIR /app
+
+recipe:
+    FROM +deps
+    COPY --dir assets migration src templates .
+    COPY Cargo.toml Cargo.lock .
+    RUN cargo chef prepare --recipe-path recipe.json
+    SAVE ARTIFACT recipe.json
+
 backend:
-    FROM rust:latest
+    FROM +deps
+    COPY +recipe/recipe.json recipe.json
+    # Build dependencies - this layer is cached unless Cargo.toml/Cargo.lock change
+    RUN cargo chef cook --release --recipe-path recipe.json
+    # Now copy source and build - only your code compiles
     COPY --dir assets migration src templates .
     COPY Cargo.toml Cargo.lock .
     ARG --required EARTHLY_GIT_HASH
@@ -24,6 +40,9 @@ build:
     SAVE IMAGE --push \
         thoward27/bookclub:$EARTHLY_GIT_HASH \
         thoward27/bookclub:$EARTHLY_GIT_BRANCH
+
+build-all-platforms:
+    BUILD --platform=linux/amd64 --platform=linux/arm64 +build
 
 levant-render:
     FROM hashicorp/levant
