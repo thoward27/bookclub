@@ -1,3 +1,23 @@
+{% if editable %}
+<div class="mb-3 position-relative">
+    <label for="book-search">Search for a book</label>
+    <input type="text"
+           class="form-control"
+           id="book-search"
+           placeholder="Search by title or author..."
+           hx-get="/books/search"
+           hx-trigger="keyup changed delay:500ms"
+           hx-target="#book-search-results"
+           hx-swap="innerHTML"
+           hx-include="[id='book-search']"
+           name="q"
+           autocomplete="off">
+    <div id="book-search-results"
+         class="position-absolute w-100"
+         style="z-index: 1000;">
+    </div>
+</div>
+{% endif %}
 <form id="book-form"
       class="form">
     <div class="form-group">

@@ -30,7 +30,7 @@ backend:
 
 build:
     FROM debian:stable-slim
-    RUN apt update -yy && apt install -yy openssl
+    RUN apt update -yy && apt install -yy openssl ca-certificates
     WORKDIR /usr/local/src
     COPY --dir config assets .
     COPY +backend/bookclub-cli .

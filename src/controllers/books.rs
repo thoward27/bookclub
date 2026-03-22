@@ -1,8 +1,12 @@
 use crate::common::middlewares::auth::Auth;
 use crate::models::_entities::{books, users};
 use crate::models::books::BookUpdateParams;
-use crate::views::books::{BookFormTemplate, BookTemplate, BooksCircuitNav, BooksTemplate};
+use crate::services::book_search::{BookSearchProvider, OpenLibraryProvider};
+use crate::views::books::{
+    BookFormTemplate, BookSearchResultsTemplate, BookTemplate, BooksCircuitNav, BooksTemplate,
+};
 use axum::debug_handler;
+use axum::extract::Query;
 use loco_rs::prelude::*;
 use migration::extension::postgres::PgExpr;
 use sea_orm::sea_query::Expr;
@@ -99,10 +103,33 @@ async fn get_book_circuits(
     Ok(BooksCircuitNav { circuits })
 }
 
+#[derive(Debug, Deserialize)]
+pub struct SearchQuery {
+    pub q: String,
+}
+
+#[debug_handler]
+async fn search_books(
+    _auth: Auth<users::Model>,
+    State(_ctx): State<AppContext>,
+    Query(params): Query<SearchQuery>,
+) -> Result<impl IntoResponse> {
+    let provider = OpenLibraryProvider::new();
+    let results = match provider.search(&params.q, 10).await {
+        Ok(r) => r,
+        Err(e) => {
+            tracing::error!(error = %e, query = %params.q, "book search failed");
+            vec![]
+        }
+    };
+    Ok(BookSearchResultsTemplate { results })
+}
+
 pub fn routes() -> Routes {
     Routes::new()
         .prefix("books")
         .add("/", get(get_books))
+        .add("/search", get(search_books))
         .add("/:id", get(get_one))
         .add("/:id", post(update_one))
         .add("/circuits/nav", get(get_book_circuits))

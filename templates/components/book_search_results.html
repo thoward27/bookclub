@@ -1,0 +1,36 @@
+{% if results.is_empty() %}
+<div class="list-group">
+    <div class="list-group-item text-muted">No results found</div>
+</div>
+{% else %}
+<div class="list-group">
+    {% for result in results %}
+    <button type="button"
+            class="list-group-item list-group-item-action"
+            data-title="{{ result.title }}"
+            data-author="{{ result.author }}"
+            data-isbn10="{{ result.isbn10 }}"
+            data-isbn13="{{ result.isbn13 }}"
+            _="on click
+                set #title.value to my @data-title
+                set #author.value to my @data-author
+                set #isbn10.value to my @data-isbn10
+                set #isbn13.value to my @data-isbn13
+                set #book-search-results.innerHTML to ''
+                set #book-search.value to ''
+                trigger keyup on #title
+                trigger keyup on #author
+                trigger keyup on #isbn10
+                trigger keyup on #isbn13
+            ">
+        <strong>{{ result.title }}</strong>
+        {% if !result.author.is_empty() %}
+        <br><small class="text-muted">{{ result.author }}</small>
+        {% endif %}
+        {% if !result.isbn13.is_empty() %}
+        <br><small class="text-muted">ISBN: {{ result.isbn13 }}</small>
+        {% endif %}
+    </button>
+    {% endfor %}
+</div>
+{% endif %}

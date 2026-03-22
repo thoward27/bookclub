@@ -1,4 +1,5 @@
 use crate::models::_entities::{books, meetings, users};
+use crate::services::book_search::BookSearchResult;
 use askama_axum::Template;
 use futures::stream::{self, StreamExt};
 use loco_rs::prelude::*;
@@ -117,5 +118,17 @@ impl BookFormTemplate {
     ) -> Self {
         let editable = book.is_editable(&user, &meeting);
         Self { book, editable }
+    }
+}
+
+#[derive(Template, Debug, Clone)]
+#[template(path = "components/book_search_results.html", escape = "none")]
+pub struct BookSearchResultsTemplate {
+    pub results: Vec<BookSearchResult>,
+}
+
+impl ViewRenderer for BookSearchResultsTemplate {
+    fn render<S: Serialize>(&self, _key: &str, _data: S) -> Result<String> {
+        Ok(Template::render(self).unwrap())
     }
 }
