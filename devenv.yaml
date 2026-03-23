@@ -1,15 +1,20 @@
 inputs:
-  nix2container:
-    url: github:nlewo/nix2container
-    inputs:
-      nixpkgs:
-        follows: nixpkgs
   fenix:
     url: github:nix-community/fenix
     inputs:
       nixpkgs:
         follows: nixpkgs
-  nixpkgs:
-    url: github:cachix/devenv-nixpkgs/rolling
   mk-shell-bin:
     url: github:rrbutani/nix-mk-shell-bin
+  nix2container:
+    url: github:nlewo/nix2container
+    inputs:
+      nixpkgs:
+        follows: nixpkgs
+  rust-overlay:
+    url: github:oxalica/rust-overlay
+    inputs:
+      nixpkgs:
+        follows: nixpkgs
+  nixpkgs:
+    url: github:cachix/devenv-nixpkgs/rolling

@@ -9,7 +9,7 @@ in
   packages = [
     pkgs.libiconv
   ]
-  ++ lib.optionals (pkgs.stdenv.isDarwin) [ pkgs.darwin.apple_sdk.frameworks.Foundation ]
+  ++ lib.optionals (pkgs.stdenv.isDarwin) [ pkgs.apple-sdk ]
   ++ lib.optionals (!config.containers.prod.isBuilding) [ pkgs.git pkgs.watchexec pkgs.earthly pkgs.helix ];
 
   enterTest = ''
@@ -25,7 +25,7 @@ in
         --watch templates \
         --watch src \
         --restart \
-        'cargo loco start --binding 127.0.0.1' 
+        'cargo loco start --binding 0.0.0.0'
     '';
   };
 
@@ -58,7 +58,7 @@ in
     javascript.pnpm.enable = true;
   };
 
-  pre-commit.hooks = {
+  git-hooks.hooks = {
     clippy.enable = true;
     clippy.settings.allFeatures = true;
     clippy.settings.denyWarnings = true;
