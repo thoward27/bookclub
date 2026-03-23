@@ -38,6 +38,15 @@ impl super::_entities::books::Model {
         }
     }
 
+    /// Hash `circuit_title` to a hue value (0–360) for consistent color coding.
+    pub fn circuit_hue(&self) -> u16 {
+        // djb2 hash — simple, fast, good distribution
+        let hash = self.circuit_title.bytes().fold(5381u32, |h, b| {
+            h.wrapping_mul(33).wrapping_add(u32::from(b))
+        });
+        (hash % 360) as u16
+    }
+
     pub fn is_editable(
         &self,
         user: &super::_entities::users::Model,

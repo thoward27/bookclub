@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 
 {% block body %}
+<style>
+    .list-group-item[data-circuit-hue] {
+        border-left: 3px solid hsl(var(--circuit-hue), 40%, 55%);
+    }
+</style>
 <div class="list-group">
     {% for (meeting, book) in meetings %}
-    <div class="list-group-item">
+    <div class="list-group-item" data-circuit-hue style="--circuit-hue: {{ book.circuit_hue() }}">
         <div class="row align-items-center">
             <div class="col-auto">
                 <div class="row align-items-end">
